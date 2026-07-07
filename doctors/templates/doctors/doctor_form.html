@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2> Add Doctor </h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h4> User Information </h4>
+        {{ user_form.as_p }}
+
+        <hr>
+        <h4> Doctor Information</h4>
+        {{ doctor_form.as_P }}
+
+        <button class="btn btn-primary"> Save Doctor</button>
+    </form>
+
+</div>
+{% endblock %}

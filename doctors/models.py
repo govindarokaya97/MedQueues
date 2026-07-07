@@ -16,7 +16,7 @@ class Doctor(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
 
     specialization = models.CharField(max_length=100)
-    qualifications = models.CharField(max_length=100)
+    qualification = models.CharField(max_length=100)
     experience = models.PositiveIntegerField(help_text="Years of experience")
     consultation_fee = models.DecimalField(max_digits=8, decimal_places=2)
 
@@ -27,7 +27,7 @@ class Doctor(models.Model):
 
     joined_date = models.DateField(auto_now_add=True)
 
-    photo = models.ImageField(
+    profile_photo = models.ImageField(
         upload_to='doctor_photos/', 
         blank=True, 
         null=True)
