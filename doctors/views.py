@@ -1,8 +1,34 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from .forms import DoctorForm, DoctorUserForm
+from .models import Doctor, Department
 
 
 # Create your views here.
+
+def doctor_list(request):
+    doctors = Doctor.objects.select_related("user","department")
+
+    search = request.GET.get("search")
+    department = request.GET.get("department")
+
+    if search:
+        doctors = doctors.filter(
+            Q(user__first_name__icontains=search) |
+            Q(user__last_name__icontains=search) |
+            Q(specialization__icontains=search)
+        )
+    if department:
+        doctors = doctors.filter(department_id=department)
+
+    departments = Department.objects.all()
+
+    context={
+        "doctors": doctors,
+        "departments": departments,
+    }
+    return render(request, "doctors/doctor_list.html", context)
+
 
 def doctor_create(request):
     if request.method == "POST":

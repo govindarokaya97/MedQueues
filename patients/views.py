@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from .models import Patient
 from .forms import PatientForm
 
@@ -10,10 +11,10 @@ def patient_list(request):
     patients = Patient.objects.all()
 
     if search:
-        patients =(
-            patients.filter(first_name__icontains=search) |
-            patients.filter(last_name__icontains=search) | 
-            patients.filter(phone__icontains=search)
+        patients =patients.filter(
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) | 
+            Q(phone__icontains=search)
         )
     return render(request, 'patients/patient_list.html', {
         'patients': patients,
