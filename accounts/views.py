@@ -20,3 +20,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def home(request):
+    return redirect('dashboard')  # Redirect to the dashboard view after login
