@@ -5,10 +5,21 @@
     <h2>Doctor Profile</h2>
     <div class="card">
         <div class="card-body">
-            <h3>
-                Dr.{{doctor.user.first_name}}{{doctor.user.last_name}}
-            </h3>
             <hr>
+            <h3>
+                Dr. {{doctor.user.first_name}} {{doctor.user.last_name}}
+            </h3>
+
+
+            <!-- Doctor Profile Picture -->
+
+            {% if doctor.profile_photo %}
+            <img src="{{ doctor.profile_photo.url }}" alt="Doctor Photo" width="80" height="80" class="img-thumbnail">
+
+            {% else %}
+            <p> No profile photo available... </p>
+
+            {% endif %}
             <p><strong>Department : </strong> {{ doctor.department }} </p>
             <p><strong>Specialization : </strong> {{ doctor.specialization }} </p>
             <p><strong>Qualification : </strong> {{ doctor.qualification }} </p>
@@ -28,7 +39,10 @@
 
             </p>
         </div>
+
     </div>
+
+    <!-- Weekly Schedule........ -->
     <hr>
     <h4>
         Weekly Schedule
@@ -68,5 +82,6 @@
             {% endfor %}
         </tbody>
     </table>
+
 </div>
 {% endblock %}
