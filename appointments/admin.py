@@ -23,3 +23,9 @@ class AppointmentAdmin(admin.ModelAdmin):
         "patient__first_name",
         "doctor__user__first_name",
     )
+
+
+
+
+   
+    
