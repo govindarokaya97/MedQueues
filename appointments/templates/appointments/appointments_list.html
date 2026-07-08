@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Appointments</h2>
+
+    <a href="{% url 'appointments_add' %}" class="btn btn-primary mb-3">Book Appointment</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th> Patient </th>
+                <th> Doctor </th>
+                <th> Date </th>
+                <th> Time </th>
+                <th> Status </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.patient }}</td>
+
+                <td>
+                    Dr.
+                    {{ appointment.doctor.user.first_name }}
+                    {{ appointment.doctor.user.last_name }}
+                </td>
+                <td>{{ appointment.appointment_date }}</td>
+                <td>{{ appointment.appointment_time }}</td>
+
+                <td>
+                    {% if appointment.status == "Pending" %}
+                    <span class=" badge bg-warning">Pending</span>
+
+                    {% elif appointment.status == "Confirmed" %}
+                    <span class=" badge bg-success"> Confirmed </span>
+
+                    {% elif appointment.status == "Completed" %}
+                    <span class=" badge bg-primary "> Completed </span>
+
+                    {% else %}
+                    <span class=" badge bg-danger "> Cancelled </span>
+
+                    {% endif %}
+
+                </td>
+            </tr>
+            {% empty %}
+
+            <tr>
+                <td colspan="5" class="text-center"> No Appointments Found </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from .models import Patient
 from .forms import PatientForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages 
 
 # Create your views here.
 
@@ -10,10 +13,10 @@ def patient_list(request):
     patients = Patient.objects.all()
 
     if search:
-        patients =(
-            patients.filter(first_name__icontains=search) |
-            patients.filter(last_name__icontains=search) | 
-            patients.filter(phone__icontains=search)
+        patients =patients.filter(
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) | 
+            Q(phone__icontains=search)
         )
     return render(request, 'patients/patient_list.html', {
         'patients': patients,
@@ -26,6 +29,7 @@ def patient_create(request):
         form = PatientForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Created Successfully")
             return redirect('patient_list')
     else:
         form = PatientForm()
@@ -45,6 +49,7 @@ def patient_update(request, id):
         form = PatientForm(request.POST, instance=patient)
         if form.is_valid():
             form.save()
+            messages.success(request, "Updated Successfully")
             return redirect('patient_list')
     else:
         form = PatientForm(instance=patient)
@@ -57,8 +62,14 @@ def patient_delete(request, id):
 
     if request.method == 'POST':
         patient.delete()
+        messages.success(request, "Deleted Successfully")
         return redirect('patient_list')
         
     return render(request, 'patients/patient_confirm_delete.html', {
         'patient': patient
         })
+
+
+
+def dashboard(request):
+    return render(request, "patients/patients_dashboard.html")

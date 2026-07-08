@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from models import Doctor
+from .models import Doctor
 
 User = get_user_model()
 
@@ -14,7 +14,7 @@ class DoctorForm(forms.ModelForm):
             "experience",
             "consultation_fee",
             "phone",
-            "adress",
+            "address",
             "available",
             "profile_photo",
         ]

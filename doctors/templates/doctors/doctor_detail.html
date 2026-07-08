@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Doctor Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <hr>
+            <h3>
+                Dr. {{doctor.user.first_name}} {{doctor.user.last_name}}
+            </h3>
+
+
+            <!-- Doctor Profile Picture -->
+
+            {% if doctor.profile_photo %}
+            <img src="{{ doctor.profile_photo.url }}" alt="Doctor Photo" width="80" height="80" class="img-thumbnail">
+
+            {% else %}
+            <p> No profile photo available... </p>
+
+            {% endif %}
+            <p><strong>Department : </strong> {{ doctor.department }} </p>
+            <p><strong>Specialization : </strong> {{ doctor.specialization }} </p>
+            <p><strong>Qualification : </strong> {{ doctor.qualification }} </p>
+            <p><strong>Experience : </strong> {{ doctor.experience }} Years</p>
+            <p><strong>Consultation Fee : </strong>Rs. {{ doctor.consultation_fee }} </p>
+            <p><strong>Phone : </strong> {{ doctor.phone }} </p>
+            <p><strong>Address : </strong> {{ doctor.address }} </p>
+            <p><strong>Status : </strong>
+
+                {% if doctor.available %}
+                <span class="badge bg-success"> Availale </span>
+
+                {% else %}
+                <span class="badge bg-danger"> Unavailable </span>
+
+                {% endif %}
+
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Weekly Schedule........ -->
+    <hr>
+    <h4>
+        Weekly Schedule
+    </h4>
+    <table class="table table-bordered">
+        <thread>
+            <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+        </thread>
+
+        <tbody>
+            {% for schedule in doctor.schedules.all %}
+
+            <tr>
+                <td>{{ schedule.day }}</td>
+                <td>{{ schedule.start_time }} - {{ schedule.end_time }}</td>
+
+                <td>
+                    {% if schedule.is_available %}
+                    <span class="badge bg-success">Available</span>
+
+                    {% else %}
+                    <span class="badge bg-danger">Not Available</span>
+
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center"> No Schedule Added </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
