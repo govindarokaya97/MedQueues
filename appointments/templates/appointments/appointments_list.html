@@ -7,6 +7,37 @@
 
     <a href="{% url 'appointments_add' %}" class="btn btn-primary mb-3">Book Appointment</a>
 
+    <form method="GET" class="row mb-3">
+
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search Patient or Doctor">
+        </div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+
+                {% for value,label in status_choices %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" name="date" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                Search
+            </button>
+        </div>
+
+    </form>
+
+
+
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
             <tr>
@@ -15,6 +46,7 @@
                 <th> Date </th>
                 <th> Time </th>
                 <th> Status </th>
+                <th> Actions </th>
             </tr>
         </thead>
         <tbody>
@@ -44,6 +76,21 @@
                     <span class=" badge bg-danger "> Cancelled </span>
 
                     {% endif %}
+
+                </td>
+                <td>
+
+                    <a href="{% url 'appointments_detail' appointment.id %}" class="btn btn-info btn-sm">
+                        View
+                    </a>
+
+                    <a href="{% url 'appointments_edit' appointment.id %}" class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'appointments_delete' appointment.id %}" class="btn btn-danger btn-sm">
+                        Delete
+                    </a>
 
                 </td>
             </tr>
