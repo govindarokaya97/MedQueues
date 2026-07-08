@@ -4,13 +4,13 @@
 
 {% block content %}
 
-<div class="container mt4">
+<div class="container mt-4">
     <h2>Doctors</h2>
     <div class="d-flex justify-content-between mb-3">
         <form method="GET" class="d-flex">
             <input class="form-control me-2" type="text" name="search" placeholder="Search Doctor...">
 
-            <select class="form-select me-2" name="departmet">
+            <select class="form-select me-2" name="department">
                 <option value="">All Departments</option>
 
                 {% for dept in departments %}
@@ -64,9 +64,9 @@
                 </td>
 
                 <td>
-                    <a href="#" class="btn btn-info btn-sm"> View </a>
-                    <a href="#" class="btn btn-warning btn-sm"> Edit </a>
-                    <a href="#" class="btn btn-danger btn-sm"> Delete </a>
+                    <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-info btn-sm"> View </a>
+                    <a href="{% url 'doctor_edit' doctor.id %}" class="btn btn-warning btn-sm"> Edit </a>
+                    <a href="{% url 'doctor_delete' doctor.id %}" class="btn btn-danger btn-sm"> Delete </a>
 
                 </td>
             </tr>

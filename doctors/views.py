@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from .forms import DoctorForm, DoctorUserForm
 from .models import Doctor, Department
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -43,7 +45,6 @@ def doctor_create(request):
             print("Form is Valid")
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data["password"])
-            user.role = "doctor"
             user.save()
             print("User Saved", user.id)
 
@@ -52,6 +53,8 @@ def doctor_create(request):
             doctor.save()
             print("Doctor Saved:", doctor.id)
 
+
+            messages.success(request, "Doctor Added Successfully")
             return redirect ("doctor_list")
         
     else:
@@ -65,9 +68,49 @@ def doctor_create(request):
         "user_form": user_form,
         "doctor_form": doctor_form
     })
-    
+
+def doctor_detail(request,id):
+    doctor = get_object_or_404(Doctor, id=id)
+    context={
+        "doctor": doctor
+    }
+    return render(request, "doctors/doctor_detail.html",context)
 
 
+
+@login_required
+def doctor_update(request, id):
+    doctor = get_object_or_404(Doctor, id=id)
+
+    if request.method == "POST":
+        doctor_form = DoctorForm(request.POST, request.FILES, instance=doctor)
+
+        if doctor_form.is_valid():
+            doctor_form.save()
+            messages.success(request, "Updated Successfully")
+            return redirect("doctor_list")
+    else:
+        doctor_form = DoctorForm(instance=doctor)
+
+    context = {
+        "doctor": doctor,
+        "doctor_form": doctor_form,
+    }
+
+    return render(request, "doctors/doctor_form.html", context)
+
+def doctor_delete(request, id):
+    doctor = get_object_or_404(Doctor, id=id)
+
+    if request.method == "POST":
+        doctor.delete()
+        messages.success(request, "Deleted Successfully")
+        return redirect("doctor_list")
+    context={
+        "doctor":doctor
+    }
+
+    return render(request, "doctors/doctor_confirm_delete.html", context)
 
 
 def doctor_dashboard(request):

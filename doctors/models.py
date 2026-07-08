@@ -36,3 +36,30 @@ class Doctor(models.Model):
     def __str__(self):
         return f"Dr. {self.user.get_full_name()} or {self.user.username}"
 
+
+
+class DoctorSchedule(models.Model):
+    Days = [
+        ("Monday", "Monday"),
+        ("Tuesday", "Tuesday"),
+        ("Wednesday", "Wednesday"),
+        ("Thursday", "Thrusday"),
+        ("Friday", "Friday"),
+        ("Saturday", "Saturday"),
+        ("Sunday", "Sunday"),
+    ]
+
+    doctor = models.ForeignKey(Doctor,on_delete=models.CASCADE, related_name="Schedules")
+
+    day = models.CharField(max_length=10, choices=Days)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    is_available = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("doctor", "day")
+    
+    def __str__(self):
+        return f"{self.doctor} - {self.day}"
+    

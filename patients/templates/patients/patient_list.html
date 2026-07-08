@@ -35,11 +35,13 @@
                 <form action="{% url 'patient_delete' patient.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
             </td>
+
         </tr>
         {% empty %}
         <tr>
-            <td colspan="3">No patients found.</td>
+            <td colspan="5">No patients found.</td>
         </tr>
         {% endfor %}
     </tbody>
