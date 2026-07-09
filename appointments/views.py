@@ -3,6 +3,9 @@ from django.db.models import Q
 from .models import Appointment
 from .forms import AppointmentForm
 from django.contrib import messages
+from datetime import date
+
+
 
 # Create your views here.
 
@@ -49,6 +52,14 @@ def appointment_create(request):
 
             messages.success(request, "Appointment Booked Successfully")
             return redirect("appointments_list")
+        
+        doctor = form.cleaned_data["doctor"]
+
+        if not doctor.available:
+            form.add_error(
+                "doctor",
+                "This doctor is currently unavailable."
+            )
     
     else:
         form = AppointmentForm()
@@ -99,3 +110,26 @@ def appointment_delete(request, id):
     return render(request,"appointments/appointments_confirm_delete.html",{
         "appointment":appointment
     })
+
+
+def appointment_dashboard(request):
+    today = date.today()
+
+    appointments_today = Appointment.objects.filter(
+        appointment_date=today
+    )
+
+    context = {
+        "appointments_today": appointments_today.count(),
+        "pending": appointments_today.filter(
+            status="Pending"
+        ).count(),
+        "confirmed": appointments_today.filter(
+            status="Confirmed"
+        ).count(),
+        "completed": appointments_today.filter(
+            status="Completed"
+        ).count(),
+    }
+
+    return render(request, "appointments/appointments_dashboard.html", context)
