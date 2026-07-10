@@ -1,3 +1,8 @@
+{% extends "dashboard/index.html" %}
+
+
+{% block content %}
 <h1> MedQueue Dashboard </h1>
-<p>Welcome, {{ user.username }}</p>
-<a href="{% url 'logout' %}">Logout</a>
+<p>Welcome, {{ request.user.username }} </p>
+
+{% endblock %}

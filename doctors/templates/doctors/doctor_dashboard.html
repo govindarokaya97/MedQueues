@@ -1,25 +1,37 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}Dashboard{% endblock %}
 
-<head>
-    <title>{% block title %}MedQueue{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-</head>
+{% block content %}
+{% include "includes/back_button.html" %}
 
-<body>
-    {% include 'includes/navbar.html' %}
-    <div class="wrapper">
-        {% include 'includes/sidebar.html' %}
-        <main class="content">
-            {% block content %}
-            {% endblock %}
-        </main>
+<h2>Dashboard</h2>
+<p>Welcome, {{ user.username }}</p>
 
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h4>{{ total_patients }}</h4>
+                <p class="card-text">Total Patients</p>
+            </div>
+        </div>
     </div>
-
-    {% include 'includes/footer.html' %}
-</body>
-
-</html>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h4>{{ total_doctors }}</h4>
+                <p class="card-text">Total Doctors</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h4>{{ appointments_today }}</h4>
+                <p class="card-text">Today's Appointments</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

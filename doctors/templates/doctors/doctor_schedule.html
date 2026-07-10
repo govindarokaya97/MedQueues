@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "includes/back_button.html" %}
+
+<div class="container mt-4">
+    <h2>Weekly Schedule — Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h2>
+    <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-outline-secondary btn-sm mb-3">Back to Profile</a>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Add a slot</h5>
+            <form method="POST" class="row g-2 align-items-end">
+                {% csrf_token %}
+                <div class="col-md-3">{{ form.day.label_tag }} {{ form.day }}</div>
+                <div class="col-md-3">{{ form.start_time.label_tag }} {{ form.start_time }}</div>
+                <div class="col-md-3">{{ form.end_time.label_tag }} {{ form.end_time }}</div>
+                <div class="col-md-2 form-check mt-4">
+                    {{ form.is_available }} <label class="form-check-label">Available</label>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+            <tr>
+                <td>{{ slot.day }}</td>
+                <td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+                <td>
+                    {% if slot.is_available %}
+                    <span class="badge bg-success">Available</span>
+                    {% else %}
+                    <span class="badge bg-danger">Not Available</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="{% url 'doctor_schedule_delete' doctor.id slot.id %}"
+                        style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No slots added yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -13,5 +13,5 @@ urlpatterns = [
     path("<int:id>/", views.appointment_detail, name="appointments_detail"),
     path("<int:id>/edit/", views.appointment_update, name="appointments_edit"),
     path("<int:id>/delete/", views.appointment_delete, name="appointments_delete"),
-
+    path("<int:id>/slip/", views.appointment_slip, name="appointments_slip"),
 ]
