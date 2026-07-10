@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% include "includes/back_button.html" %}
+
 <div class="container mt-4">
     <h2>Doctor Profile</h2>
     <div class="card">
@@ -30,7 +32,7 @@
             <p><strong>Status : </strong>
 
                 {% if doctor.available %}
-                <span class="badge bg-success"> Availale </span>
+                <span class="badge bg-success"> Available </span>
 
                 {% else %}
                 <span class="badge bg-danger"> Unavailable </span>
@@ -44,17 +46,24 @@
 
     <!-- Weekly Schedule........ -->
     <hr>
-    <h4>
-        Weekly Schedule
-    </h4>
+    <div class="d-flex justify-content-between align-items-center">
+        <h4>
+            Weekly Schedule
+        </h4>
+        <div>
+            <a href="{% url 'doctor_schedule' doctor.id %}" class="btn btn-primary btn-sm">Manage Schedule</a>
+            <a href="{% url 'leave_request_create' doctor.id %}" class="btn btn-outline-secondary btn-sm">Request
+                Leave</a>
+        </div>
+    </div>
     <table class="table table-bordered">
-        <thread>
+        <thead>
             <tr>
                 <th>Day</th>
                 <th>Time</th>
                 <th>Status</th>
             </tr>
-        </thread>
+        </thead>
 
         <tbody>
             {% for schedule in doctor.schedules.all %}

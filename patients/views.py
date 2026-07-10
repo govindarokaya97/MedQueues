@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from .models import Patient
 from .forms import PatientForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 
 # Create your views here.
-
+@login_required
 def patient_list(request):
     search = request.GET.get('search')
 
@@ -24,6 +24,7 @@ def patient_list(request):
         })
 
 
+@login_required
 def patient_create(request):
     if request.method == 'POST':
         form = PatientForm(request.POST)
@@ -37,12 +38,16 @@ def patient_create(request):
         'form': form
         })
 
+
+@login_required
 def patient_detail(request, id):
     patient = get_object_or_404(Patient, id=id)
     return render(request, 'patients/patient_detail.html', {
         'patient': patient
         })
 
+
+@login_required
 def patient_update(request, id):
     patient = get_object_or_404(Patient, id=id)
     if request.method == 'POST':
@@ -57,6 +62,8 @@ def patient_update(request, id):
         'form': form
         })
 
+
+@login_required
 def patient_delete(request, id):
     patient = get_object_or_404(Patient, id=id)
 
@@ -70,6 +77,3 @@ def patient_delete(request, id):
         })
 
 
-
-def dashboard(request):
-    return render(request, "patients/patients_dashboard.html")

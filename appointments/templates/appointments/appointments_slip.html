@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "includes/back_button.html" %}
+
+
+<div class="container mt-4">
+    <h2> Appointment Slip </h2>
+    <hr>
+
+    <p><strong>Patient :</strong> {{ appointment.patient }}</p>
+    <p><strong>Doctor :</strong>Dr. {{ appointment.doctor.user.get_full_name }}</p>
+    <p><strong>Date :</strong> {{ appointment.appointment_date }}</p>
+    <p><strong>Time :</strong> {{ appointment.appointment_time }}</p>
+    <p><strong>Reason :</strong> {{ appointment.reason }}</p>
+
+    <button onclick="window.print()" class="btn btn-primary"> Print Slip </button>
+
+</div>
+
+{% endblock %}

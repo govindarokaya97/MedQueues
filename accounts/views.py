@@ -13,7 +13,7 @@ def login_view(request):
             return redirect('dashboard') 
         else:
             # Return an 'invalid login' error message.
-            messages.success(request, "Invalid username or password")
+            messages.error(request, "Invalid username or password")
             return render(request, 'accounts/login.html',
             {'error': 'Invalid username or password'
             })

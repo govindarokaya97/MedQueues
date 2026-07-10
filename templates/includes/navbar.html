@@ -2,6 +2,11 @@
     <div class="container-fluid">
         <span class="navbar-brand">MedQueue</span>
 
+        <a class="nav-link text-white" href="{% url 'logout' %}">Logout</a>
+
         <span class="text-white">{{ request.user.username }}</span>
+
     </div>
+
+
 </nav>

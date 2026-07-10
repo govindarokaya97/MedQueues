@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% include "includes/back_button.html" %}
 <div class="container mt-4">
     <h2> Appointment Dashboard </h2>
 
     <div class="row">
         <div class="col-md-3">
             <div class="card bg-primary text-white">
-                <div clas="card-body">
+                <div class="card-body">
 
                     <h3>{{ appointments_today }}</h3>
                     <p> Today's Appointment </p>

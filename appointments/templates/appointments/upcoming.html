@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include "includes/back_button.html" %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 ">
+        <h2> Upcoming Appointments </h2>
+        <a href="{% url 'appointments_add' %}" class="btn btn-success">
+            + Book Appointment
+        </a>
+    </div>
+
+    {% if appointments %}
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                <td> {{ forloop.counter }} </td>
+                <td> {{ appointment.patient }} </td>
+                <td> Dr. {{ appointment.doctor.user.get_full_name }} </td>
+                <td> {{ appointment.appointment_date }} </td>
+                <td> {{ appointment.appointment_time }} </td>
+
+                <td>
+                    {% if appointment.status == "Pending" %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+
+                    {% elif appointment.status == "Confirmed" %}
+                    <span class="badge bg-success text-dark">Confirmed</span>
+
+                    {% elif appointment.status == "Completed" %}
+                    <span class="badge bg-primary text-dark">Completed</span>
+
+                    {% else %}
+                    <span class="badge bg-danger text-dark">Cancelled</span>
+
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{% url 'appointments_detail' appointment.id %}" class=" btn btn-info btn-sm "> View </a>
+                    <a href="{% url 'appointments_edit' appointment.id %}" class=" btn btn-info btn-sm "> Edit </a>
+                    <a href="{% url 'appointments_delete' appointment.id %}" class=" btn btn-info btn-sm "> Delete </a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info "> No Upcoming Appointments Found....</div>
+
+    {% endif %}
+</div>
+
+{% endblock %}
