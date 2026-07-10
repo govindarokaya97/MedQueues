@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2> Appointment Report </h2>
+<table class=" table table-bordered ">
+    <tr>
+        <th>Status</th>
+        <th>Total</th>
+    </tr>
+
+    {% for item in report %}
+
+    <tr>
+        <td> {{ item.status }} </td>
+        <td> {{ item.total }} </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

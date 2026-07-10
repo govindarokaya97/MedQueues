@@ -5,23 +5,36 @@
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'dashboard' %}">Home</a>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'patient_list' %}">Patients</a>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'doctor_list' %}">Doctors</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'doctor_add' %}">Add Doctor</a>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'appointments_list' %}">Appointments</a>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'appointments_add' %}">Book Appointment</a>
         </li>
+
         <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'appointments_dashboard' %}">Appointment Dashboard</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'upcoming_appointments' %}">Upcoming Appointments</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'appointments_report' %}">Appointment Report</a>
         </li>
 
     </ul>

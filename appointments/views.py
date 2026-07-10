@@ -4,6 +4,8 @@ from .models import Appointment
 from .forms import AppointmentForm
 from django.contrib import messages
 from datetime import date
+from django.utils import timezone
+from django.db.models import Count
 
 
 
@@ -115,21 +117,41 @@ def appointment_delete(request, id):
 def appointment_dashboard(request):
     today = date.today()
 
-    appointments_today = Appointment.objects.filter(
-        appointment_date=today
-    )
+    appointments_today = Appointment.objects.filter(appointment_date=today)
+    # appointments_today = Appointment.objects.all()
+
 
     context = {
         "appointments_today": appointments_today.count(),
-        "pending": appointments_today.filter(
-            status="Pending"
-        ).count(),
-        "confirmed": appointments_today.filter(
-            status="Confirmed"
-        ).count(),
-        "completed": appointments_today.filter(
-            status="Completed"
-        ).count(),
+        "pending": appointments_today.filter(status="Pending").count(),
+        "confirmed": appointments_today.filter(status="Confirmed").count(),
+        "completed": appointments_today.filter(status="Completed").count(),
     }
 
     return render(request, "appointments/appointments_dashboard.html", context)
+
+
+def upcoming_appointments(request):
+    appointments = Appointment.objects.filter(
+        appointment_date__gte=timezone.now().date()
+    )
+
+    context = {
+        "appointments": appointments
+    }
+
+    return render(request, "appointments/upcoming.html", context)
+
+
+def appointment_report(request):
+    report = (
+        Appointment.objects.values("status")
+        .annotate(total=Count("id"))
+    )
+
+    context = {
+        "report": report
+    }
+
+    return render(request, "appointments/report.html", context)
+

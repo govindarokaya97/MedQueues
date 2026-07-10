@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
-
+@login_required
 def doctor_list(request):
     doctors = Doctor.objects.select_related("user","department")
 
