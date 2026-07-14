@@ -1,8 +1,156 @@
-{% extends "dashboard/index.html" %}
-
+{% extends 'base.html' %}
 
 {% block content %}
-<h1> MedQueue Dashboard </h1>
-<p>Welcome, {{ request.user.username }} </p>
+<h2>{{ today_count }}</h2>
 
+<p class="text-muted">
+    {{ today_date|date:"l, d F Y" }}
+</p>
+
+<h2>Admin Dashboard</h2>
+
+<p>
+    Welcome,
+    <strong>
+        {% if request.user.get_full_name %}
+        {{ request.user.get_full_name }}
+        {% else %}
+        {{ request.user.username }}
+        {% endif %}
+    </strong>
+</p>
+<hr>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body text-center">
+                <h3>{{ today }}</h3>
+                <p class="mb-0">Today's Appointments</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark h-100">
+            <div class="card-body text-center">
+                <h3>{{ pending }}</h3>
+                <p class="mb-0">Pending</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ completed }}</h2>
+                <p class="mb-0">Completed</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-3">
+
+    <div class="col-md-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ doctor_count }}</h2>
+                <p>Total Doctors</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-secondary text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ patient_count }}</h2>
+                <p>Total Patients</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-dark text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ appointment_count }}</h2>
+                <p>Total Appointments</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="card mt-4">
+    <div class="card-header">
+        Latest Doctors
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead class="table-light">
+
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for doctor in latest_doctors %}
+                <tr>
+                    <td>{{ doctor.user.get_full_name }}</td>
+                    <td>{{ doctor.department }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">No doctors found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<div class="card mt-4">
+    <div class="card-header">
+        Latest Patients
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead class="table-light">
+
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in latest_patients %}
+                <tr>
+                    <td>{{ patient }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>No patients found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mb-4">
+
+    <a href="{% url 'doctor_add' %}" class="btn btn-primary">
+        Add Doctor
+    </a>
+
+    <a href="{% url 'patient_add' %}" class="btn btn-success">
+        Add Patient
+    </a>
+
+    <a href="{% url 'appointments_add' %}" class="btn btn-warning">
+        New Appointment
+    </a>
+    <i class="fa-solid fa-user-doctor"></i><i class="fa-solid fa-user"></i><i class="fa-solid fa-calendar-check"></i><i
+        class="fa-solid fa-clock"></i>
+</div>
 {% endblock %}

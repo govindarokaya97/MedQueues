@@ -1,5 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, UserManager
+
+
+class CustomUserManager(UserManager):
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('role', 'admin')
+        return super().create_superuser(username, email, password, **extra_fields)
 
 
 class CustomUser(AbstractUser):
@@ -7,28 +13,12 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
         ('doctor', 'Doctor'),
         ('patient', 'Patient'),
-        ('receptionist', 'Receptionist'),
-        ('pharmacist', 'Pharmacist'),
-        ('lab_technician', 'Lab Technician'),
     )
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    phone = models.CharField(max_length=15, blank=True)
-    address = models.TextField(blank=True)
-    profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    force_password_change = models.BooleanField(default=True)
 
-    groups = models.ManyToManyField(
-        Group,
-        blank=True,
-        related_name='customuser_set',
-        related_query_name='customuser',
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        blank=True,
-        related_name='customuser_set',
-        related_query_name='customuser',
-    )
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username

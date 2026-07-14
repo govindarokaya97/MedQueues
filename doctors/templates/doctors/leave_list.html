@@ -8,22 +8,9 @@
     <form method="GET" class="mb-3">
         <select name="status" class="form-select w-auto d-inline-block" onchange="this.form.submit()">
             <option value="">All</option>
-
-            {% if status == 'Pending' %}
-            <span class="badge bg-warning">Pending</span>
-            {% endif %}
-
-
-            {% if status == 'Approved' %}
-            <span class="badge bg-success">Approved</span>
-            {% endif %}
-
-
-            {% if status == 'Rejected' %}
-            <span class="badge bg-danger">Rejected</span>
-            {% endif %}
-
-
+            <option value="Pending" {% if status == "Pending" %}selected{% endif %}>Pending</option>
+            <option value="Approved" {% if status == "Approved" %}selected{% endif %}>Approved</option>
+            <option value="Rejected" {% if status == "Rejected" %}selected{% endif %}>Rejected</option>
         </select>
     </form>
 
@@ -44,7 +31,7 @@
                 <td>Dr. {{ leave.doctor.user.first_name }} {{ leave.doctor.user.last_name }}</td>
                 <td>{{ leave.start_date }}</td>
                 <td>{{ leave.end_date }}</td>
-                <td>{{ leave.reason|default:"—" }}</td>
+                <td>{{ leave.reason|default:"-" }}</td>
                 <td>
                     {% if leave.status == "Approved" %}
                     <span class="badge bg-success">Approved</span>
@@ -65,7 +52,7 @@
                         <button class="btn btn-danger btn-sm">Reject</button>
                     </form>
                     {% else %}
-                    —
+                    -
                     {% endif %}
                 </td>
             </tr>

@@ -3,12 +3,124 @@
 {% block content %}
 {% include "includes/back_button.html" %}
 
-<h1>Patient Details</h1>
-<p><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
-<p><strong>Age:</strong> {{ patient.age }}</p>
-<p><strong>Gender:</strong> {{ patient.gender }}</p>
-<p><strong>Phone:</strong> {{ patient.phone }}</p>
-<p><strong>Email:</strong> {{ patient.email }}</p>
-<p><strong>Disease:</strong> {{ patient.disease }}</p>
-<a href="{% url 'patient_list'%}" class="btn btn-primary">Back</a>
+<h2>Patient Profile</h2>
+
+{% if patient.profile_photo %}
+<img src="{{ patient.profile_photo.url }}" width="180" class="img-thumbnail">
+{% endif %}
+
+<table class="table">
+    <tr>
+        <td>Name</td>
+        <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+    </tr>
+
+    <tr>
+        <td>Gender</td>
+        <td>{{ patient.gender }}</td>
+    </tr>
+
+    <tr>
+        <td>Age</td>
+        <td>{{ patient.age }}</td>
+    </tr>
+
+    <tr>
+        <td>Phone</td>
+        <td>{{ patient.phone }}</td>
+    </tr>
+
+    <tr>
+        <td>Email</td>
+        <td>{{ patient.email }}</td>
+    </tr>
+
+    <tr>
+        <td>Address</td>
+        <td>{{ patient.address }}</td>
+    </tr>
+
+</table>
+
+<h4> Medical Information</h4>
+
+<table class="table">
+
+    <tr>
+        <td>Height</td>
+        <td>{{ patient.height }} cm </td>
+    </tr>
+
+    <tr>
+        <td>Weight</td>
+        <td>{{ patient.weight }} kg </td>
+    </tr>
+
+    <tr>
+        <td>Chronic Disease</td>
+        <td>{{ patient.chronic_disease }}</td>
+    </tr>
+
+    <tr>
+        <td>Allergies</td>
+        <td>{{ patient.allergies }}</td>
+    </tr>
+
+</table>
+
+<h4> Appointment History </h4>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Doctor</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+    </tr>
+
+    {% for appointment in patient.appointments.all %}
+    <tr>
+        <td>Dr. {{ appointment.doctor.user.get_full_name }} </td>
+        <td> {{ appointment.appointment_date }} </td>
+        <td> {{ appointment.appointment_time }} </td>
+        <td> {{ appointment.status }} </td>
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="3">
+            No Appointment Fond.....
+        </td>"
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<div class="card mt-4">
+    <div class="card-header">
+        Emergency Contact
+    </div>
+
+    <div class="card-body">
+        <p>
+            <strong>Name : </strong> {{ patient.emergency_contact_name }}
+        </p>
+
+        <p>
+            <strong>Relationship : </strong> {{ patient.relationship }}
+        </p>
+
+        <p>
+            <strong>Phone : </strong> {{ patient.emergency_contact_phone }}
+        </p>
+
+        <p>
+            <strong>Address : </strong> {{ patient.emergency_contact_address }}
+        </p>
+
+    </div>
+
+</div>
 {% endblock %}

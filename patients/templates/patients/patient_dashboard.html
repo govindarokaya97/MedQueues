@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <h2> Welcome {{ patient.user.get_full_name }} </h2>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h3>{{ upcoming_appointments }}</h3>
+                    <p>Upcoming Appointments</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h3>{{ recent_appointments|length }}</h3>
+                    <p>Recent Visits</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Visit History -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Visit History</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                        <th>Reason</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in recent_appointments %}
+                    <tr>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.doctor }}</td>
+                        <td>{{ appointment.status }}</td>
+                        <td>{{ appointment.reason|default:"—" }}</td>
+                        <td>{{ appointment.notes|default:"—" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No visits recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Medical Summary -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Medical Summary</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Blood Group:</strong> {{ patient.blood_group|default:"—" }}</p>
+            <p><strong>Chronic Disease:</strong> {{ patient.chronic_disease|default:"—" }}</p>
+            <p><strong>Allergies:</strong> {{ patient.allergies|default:"—" }}</p>
+            <p><strong>Medical History:</strong> {{ patient.medical_history|default:"—" }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
