@@ -18,6 +18,7 @@ def appointment_list(request):
         "patient__user",
         "doctor__user",
     ).all()
+    paginate_by = 10
 
     search = request.GET.get("search")
     status = request.GET.get("status")

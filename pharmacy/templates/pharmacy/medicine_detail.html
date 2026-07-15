@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %} Medicine Form {% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3> {{ object.name }} </h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+
+                <tr>
+                    <th> Name </th>
+                    <td> {{ object.name }} </td>
+                </tr>
+
+                <tr>
+                    <th> Generic Name </th>
+                    <td> {{ object.generic_name }} </td>
+                </tr>
+
+                <tr>
+                    <th> Category </th>
+                    <td> {{ object.category }} </td>
+                </tr>
+
+                <tr>
+                    <th> Manufacturer </th>
+                    <td> {{ object.manufacturer }} </td>
+                </tr>
+                <tr>
+                    <th> Batch Number </th>
+                    <td> {{ object.batch_number }} </td>
+                </tr>
+
+                <tr>
+                    <th> Expiry Date </th>
+                    <td> {{ object.expiry_date }} </td>
+                </tr>
+                <tr>
+                    <th> Price </th>
+                    <td> {{ object.price}} </td>
+                </tr>
+
+                <tr>
+                    <th> Stock </th>
+                    <td> {{ object.stock_quantity }} </td>
+                </tr>
+
+                <tr>
+                    <th> Minimum Stock </th>
+                    <td> {{ object.minimum_stock }} </td>
+                </tr>
+
+                <tr>
+                    <th> Description </th>
+                    <td> {{ object.description }} </td>
+                </tr>
+
+            </table>
+
+            <a href="{% url 'medicine_edit' object.id %}" class="btn btn-warning"> Edit </a>
+            <a href="{% url 'medicine_list' %}" class="btn btn-secondary"> Back </a>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

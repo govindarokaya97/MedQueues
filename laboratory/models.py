@@ -73,3 +73,6 @@ class LabReport(models.Model):
     )
 
     completed_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.lab_test.test_name
