@@ -116,7 +116,6 @@ def patient_dashboard(request):
     return render(request, "patients/patient_dashboard.html", context)
 
 
-
 @role_required("admin")
 def patient_update(request, id):
     patient = get_object_or_404(Patient, id=id)
@@ -135,9 +134,9 @@ def patient_update(request, id):
     else:
         form = PatientForm(instance=patient)
 
-    return render(request, 'patients/patient_form.html', {
+    return render(request, 'patients/patient_update.html', {
         'form': form
-        })
+    })
 
 
 @role_required("admin")

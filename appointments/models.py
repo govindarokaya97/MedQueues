@@ -6,7 +6,9 @@ from doctors.models import Doctor
 
 class Appointment(models.Model):
     STATUS_CHOICES=[
+        ("Scheduled", "Scheduled"),
         ("Pending", "Pending"),
+        ("In Progress", "In Progress"),
         ("Confirmed", "Confirmed"),
         ("Completed", "Completed"),
         ("Cancelled", "Cancelled"),
@@ -20,7 +22,7 @@ class Appointment(models.Model):
 
     reason = models.TextField(blank=True)
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending", db_index=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Scheduled", db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

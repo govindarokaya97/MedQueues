@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2> Billing List </h2>
+
+<a href="{% url 'bill_add' %}" class="btn btn-primary">
+    Add Bill
+</a>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Invoice</th>
+            <th>Patient</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for bill in bills %}
+
+        <tr>
+            <td> {{ bill.invoice_number }}</td>
+            <td> {{ bill.patient }}</td>
+            <td> {{ bill.total_amount }}</td>
+            <td> {{ bill.payment_status }}</td>
+
+            <td> <a href="{% url 'bill_detail' bill.id %}">View</a></td>
+            <td> <a href="{% url 'bill_edit' bill.id %}">Edit</a></td>
+            <td> <a href="{% url 'bill_delete' bill.id %}">Delete</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No bills available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
