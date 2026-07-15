@@ -5,9 +5,21 @@
 
 <h2> Add Patient </h2>
 
-<form method="post">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save Patient</button>
+
+    <h4>Account Information</h4>
+
+    {{ user_form.as_p }}
+
+    <hr>
+
+    <h4>Patient Information</h4>
+
+    {{ patient_form.as_p }}
+
+    <button class="btn btn-primary">
+        Save Patient
+    </button>
 </form>
 {% endblock %}

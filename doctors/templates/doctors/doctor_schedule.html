@@ -4,7 +4,7 @@
 {% include "includes/back_button.html" %}
 
 <div class="container mt-4">
-    <h2>Weekly Schedule — Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h2>
+    <h2>Weekly Schedule - Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h2>
     <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-outline-secondary btn-sm mb-3">Back to Profile</a>
 
     <div class="card mb-4">

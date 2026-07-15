@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Invoice {{ object.invoice_number }}</h2>
+
+<p><strong> Patient : </strong> {{ object.patient }} </p>
+<p><strong> Amount : </strong> {{ object.amount }} </p>
+<p><strong> Discount : </strong> {{ object.discount }} </p>
+<p><strong> Tax : </strong> {{ object.tax }} </p>
+<p><strong> Total : </strong> {{ object.total_amount }} </p>
+<p><strong> Status : </strong> {{ object.payment_status }} </p>
+
+<a href="{% url 'bill_list' %}" class="btn btn-primary">Back</a>
+
+{% endblock %}

@@ -1,37 +1,141 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %} Doctor Dashboard{% endblock %}
 
 {% block content %}
+
 {% include "includes/back_button.html" %}
 
-<h2>Dashboard</h2>
-<p>Welcome, {{ user.username }}</p>
+<h2>Welcome Dr. {{ request.user.get_full_name }} </h2>
 
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h4>{{ total_patients }}</h4>
-                <p class="card-text">Total Patients</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h4>{{ total_doctors }}</h4>
-                <p class="card-text">Total Doctors</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h4>{{ appointments_today }}</h4>
-                <p class="card-text">Today's Appointments</p>
-            </div>
-        </div>
-    </div>
+<p> Have a great day !</p>
+<div class="row mt-4">
+    <a class="btn btn-primary" href="{% url 'doctor_list' %}">Doctors</a>
+    <a class="btn btn-success" href="{% url 'appointments_list' %}">Appointments</a>
+    {% if doctor %}
+    <a class="btn btn-warning" href="{% url 'doctor_schedule' doctor.id %}">
+        Schedule
+    </a>
+    {% endif %}
 </div>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Doctor Dashboard</h2>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white ">
+                <div class="card-body text-center">
+                    <h2>{{ today_count }}</h2>
+                    <p class="mb-0">Today's Appointments</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-success text-white ">
+                <div class="card-body text-center">
+                    <h2>{{ upcoming_count }}</h2>
+                    <p class="mb-0">Upcoming Appointments</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow-sm">
+                <div class="card-body text-center">
+                    <h2>{{ total_patients }}</h2>
+                    <p class="mb-0">Total Patients</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Recent Patients -->
+    <div class="card mt-4 shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">Recent Patients</h5>
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-hover mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Patient Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for patient in recent_patients %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ patient }}</td>
+                        <td>{{ patient.email }}</td>
+                        <td>{{ patient.phone }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No recent patients found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Time
+                </th>
+                <th>
+                    Patient
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+
+            {% for appointment in today_appointments %}
+
+            <tr>
+                <td> {{ appointment.appointment_time }} </td>
+                <td> {{ appointment.patient }} </td>
+                <td> {{ appointment.status }} </td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="3">
+                    No appointments today.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
 {% endblock %}

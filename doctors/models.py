@@ -13,7 +13,11 @@ class Department(models.Model):
 
 
 class Doctor(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="doctor"
+    )
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
 
     specialization = models.CharField(max_length=100)

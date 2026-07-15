@@ -1,8 +1,16 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Doctor, DoctorSchedule, DoctorLeave
+from accounts.models import CustomUser
 
-User = get_user_model()
+class DoctorUserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+        ]
 
 class DoctorForm(forms.ModelForm):
     class Meta:
@@ -18,20 +26,7 @@ class DoctorForm(forms.ModelForm):
             "available",
             "profile_photo",
         ]
-
-class DoctorUserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields =[
-            "first_name",
-            "last_name",
-            "username",
-            "email",
-            "password"
-        ]
-    password = forms.CharField(widget=forms.PasswordInput())
-
-
+        
 class DoctorScheduleForm(forms.ModelForm):
     class Meta:
         model = DoctorSchedule

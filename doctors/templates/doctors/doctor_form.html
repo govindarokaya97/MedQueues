@@ -5,21 +5,19 @@
 
 
 <div class="container mt-4">
-    <h2>{% if doctor %}Edit Doctor{% else %}Add Doctor{% endif %}</h2>
+    <h2>Add Doctor</h2>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% if user_form %}
-        <h4> Account Information </h4>
+
+        <h4>Account Information</h4>
         {{ user_form.as_p }}
 
-        <hr>
-        {% endif %}
-        <h4> Doctor Information</h4>
+        <h4>Doctor Information</h4>
         {{ doctor_form.as_p }}
 
-        <button class="btn btn-primary"> Save Doctor</button>
+        <button type="submit" class="btn btn-primary">
+            Save Doctor
+        </button>
     </form>
-
-</div>
-{% endblock %}
+    {% endblock %}

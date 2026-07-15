@@ -92,5 +92,31 @@
         </tbody>
     </table>
 
+    <h4> Assigned Patients </h4>
+    <table class="table ">
+        <tr>
+            <th>Patients</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+        </tr>
+
+        {% for appointment in doctor.appointments.all %}
+        <tr>
+            <td>{{ appointment.patient.first_name}} {{ appointment.patient.last_name}}</td>
+            <td>{{ appointment.appointment_date}}</td>
+            <td>{{ appointment.appointment_time }}</td>
+            <td>{{ appointment.status}}</td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="3">
+                No PAtients Assigned
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
 </div>
 {% endblock %}

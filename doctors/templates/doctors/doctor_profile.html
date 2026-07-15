@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    {% if doctor.profile_photo %}
+                    <img src="{{ doctor.profile_photo.url }}" width="200" class="img-fluid rounded-circle">
+
+                    {% else %}
+                    <img src="https://via.placeholder.com/200" class="rounded-circle">
+
+                    {% endif %}
+                </div>
+
+                <div class="col-md-8">
+                    <h2>
+                        Dr. {{doctor.user.first_name}} {{doctor.user.last_name}}
+                    </h2>
+                    <hr>
+
+                    <p><strong>Department : </strong> {{ doctor.department }} </p>
+                    <p><strong>Specialization : </strong> {{ doctor.specialization }} </p>
+                    <p><strong>Qualification : </strong> {{ doctor.qualification }} </p>
+                    <p><strong>Experience : </strong> {{ doctor.experience }} Years</p>
+                    <p><strong>Consultation Fee : </strong>Rs. {{ doctor.consultation_fee }} </p>
+                    <p><strong>Phone : </strong> {{ doctor.phone }} </p>
+                    <p><strong>Address : </strong> {{ doctor.address }} </p>
+                    <p><strong>Status : </strong>
+
+                        {% if doctor.available %}
+                        <span class="badge bg-success"> Available </span>
+
+                        {% else %}
+                        <span class="badge bg-danger"> Unavailable </span>
+
+                        {% endif %}
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'doctor_edit' doctor.id %}" class=" btn btn-warning ">
+        Edit Profile
+    </a>
+
+    <a href="{% url 'appointments_list' %}" class=" btn btn-primary">
+        Appointments
+    </a>
+
+    <a href="{% url 'dashboard'  %}" class=" btn btn-success ">
+        Dashboard
+    </a>
+
+</div>
+{% endblock %}
