@@ -95,7 +95,7 @@
         </tbody>
     </table>
 
-    <nav aria-label="Page navigation">
+    <nav aria-labels="Page navigation">
         <ul class="pagination justify-content-center">
 
             {% if page_obj.has_previous %}
@@ -122,5 +122,9 @@
 
         </ul>
     </nav>
+    <div class="alert alert-info mt-3">
+        <strong>Estimated Total : </strong>
+        Rs.{{ prescription.grand_total }}
+    </div>
 </div>
 {% endblock %}

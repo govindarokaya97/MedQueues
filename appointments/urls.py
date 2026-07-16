@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from pharmacy.views import prescription_create
 
 urlpatterns = [
     path("dashboard/",views.appointment_dashboard, name="appointments_dashboard" ),
@@ -14,4 +15,7 @@ urlpatterns = [
     path("<int:id>/edit/", views.appointment_update, name="appointments_edit"),
     path("<int:id>/delete/", views.appointment_delete, name="appointments_delete"),
     path("<int:id>/slip/", views.appointment_slip, name="appointments_slip"),
+    
+    path("appointments/<int:appointment_id>/prescription/", prescription_create, name="prescription_create")
+    
 ]

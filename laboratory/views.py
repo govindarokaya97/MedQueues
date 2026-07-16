@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView)
-from .models import LabReport, LabTest
+from .models import LabTest
+from .forms import LabTestForm
 
 # Create your views here.
 
@@ -23,6 +24,7 @@ class TestDetailView(DetailView):
 class TestCreateView(CreateView):
     model = LabTest
     template_name = "laboratory/test_form.html"
+    form_class = LabTestForm
     success_url = reverse_lazy("test_list")
     
     
@@ -30,13 +32,14 @@ class TestUpdateView(UpdateView):
     model = LabTest
     pk_url_kwarg = "id"
     template_name = "laboratory/test_form.html"
+    form_class = LabTestForm
     success_url = reverse_lazy("test_list")
     
     
-class MedicineDeleteView(DeleteView):
+class TestDeleteView(DeleteView):
     model = LabTest
     pk_url_kwarg = "id"
-    template_name = "laboratory/test_report.html"
+    template_name = "laboratory/test_confirm_delete.html"
     success_url = reverse_lazy("test_list")
     
 

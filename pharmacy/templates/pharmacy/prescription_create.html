@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Prescription{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    ```
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h4>Create Prescription</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-4">
+                <p class="mb-1">
+                    <strong>Patient:</strong>
+                    {{ appointment.patient }}
+                </p>
+
+                <p class="mb-1">
+                    <strong>Doctor:</strong>
+                    {{ appointment.doctor }}
+                </p>
+
+                <p class="mb-0">
+                    <strong>Appointment:</strong>
+                    {{ appointment }}
+                </p>
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ formset.management_form }}
+
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    {{ form.errors }}
+                </div>
+                {% endif %}
+
+                {% if formset.non_form_errors %}
+                <div class="alert alert-danger">
+                    {% for error in formset.non_form_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <hr>
+
+                <h5>Medicines</h5>
+
+                <table class="table table-bordered">
+
+                    <thead>
+                        <tr>
+                            <th>Medicine</th>
+                            <th>Quantity</th>
+                            <th>Dosage</th>
+                            <th>Duration</th>
+                            <th>Instruction</th>
+                            <th>Available Stock</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="medicine-table">
+
+                        {% for form in formset %}
+
+                        <tr class="medicine-form">
+
+                            <td>
+                                {{ form.medicine }}
+                                {% if form.medicine.errors %}
+                                <div class="text-danger small">
+                                    {{ form.medicine.errors }}
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ form.quantity }}
+                                {% if form.quantity.errors %}
+                                <div class="text-danger small">
+                                    {{ form.quantity.errors }}
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ form.dosage }}
+                            </td>
+
+                            <td>
+                                {{ form.duration }}
+                                {% if form.duration.errors %}
+                                <div class="text-danger small">
+                                    {{ form.duration.errors }}
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ form.instructions }}
+                            </td>
+
+                            <td>
+                                <span class="stock-display text-muted">
+                                    Select medicine
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ form.DELETE }}
+                            </td>
+
+                            {{ form.id }}
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+
+                <button type="button" id="add-form" class="btn btn-primary mb-3">
+                    + Add Medicine
+                </button>
+
+
+                <div>
+
+                    <button type="submit" class="btn btn-success">
+                        Save Prescription
+                    </button>
+
+                    <a href="{% url 'prescription_list' %}" class="btn btn-primary">
+                        View Prescription List
+                    </a>
+
+                    <a href="{% url 'prescription_list' %}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+    ```
+
+</div>
+
+<script id="empty-form-template" type="text/template">
+
+<tr class="medicine-form">
+
+    <td>
+        {{ formset.empty_form.medicine }}
+    </td>
+
+    <td>
+        {{ formset.empty_form.quantity }}
+    </td>
+
+    <td>
+        {{ formset.empty_form.dosage }}
+    </td>
+
+    <td>
+        {{ formset.empty_form.duration }}
+    </td>
+
+    <td>
+        {{ formset.empty_form.instructions }}
+    </td>
+
+    <td>
+        <span class="stock-display text-muted">
+            Select medicine
+        </span>
+    </td>
+
+    <td>
+        {{ formset.empty_form.DELETE }}
+    </td>
+
+    {{ formset.empty_form.id }}
+
+</tr>
+
+</script>
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            const addButton =
+                document.getElementById(
+                    "add-form"
+                );
+
+
+            const table =
+                document.getElementById(
+                    "medicine-table"
+                );
+
+
+            const totalForms =
+                document.getElementById(
+                    "id_form-TOTAL_FORMS"
+                );
+
+
+            const template =
+                document.getElementById(
+                    "empty-form-template"
+                ).innerHTML;
+
+
+            if (!totalForms) {
+
+                console.error(
+                    "TOTAL_FORMS field not found"
+                );
+
+                return;
+
+            }
+
+
+            addButton.addEventListener(
+                "click",
+                function () {
+
+
+                    const index =
+                        parseInt(
+                            totalForms.value,
+                            10
+                        );
+
+
+                    const html =
+                        template.replace(
+                            /__prefix__/g,
+                            index
+                        );
+
+
+                    const wrapper =
+                        document.createElement(
+                            "tbody"
+                        );
+
+
+                    wrapper.innerHTML =
+                        html.trim();
+
+
+                    const newRow =
+                        wrapper.querySelector(
+                            "tr"
+                        );
+
+
+                    table.appendChild(
+                        newRow
+                    );
+
+
+                    totalForms.value =
+                        index + 1;
+
+                }
+
+            );
+
+        }
+
+    );
+
+</script>
+
+{% endblock %}

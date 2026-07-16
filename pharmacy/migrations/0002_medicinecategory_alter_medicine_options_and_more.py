@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='medicine',
-            name='quantity',
+            name='stock_quantity',
             field=models.PositiveIntegerField(default=0),
         ),
         migrations.AlterField(

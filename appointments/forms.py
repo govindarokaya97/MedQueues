@@ -30,8 +30,8 @@ class AppointmentForm(forms.ModelForm):
                 appointment_time=appointment_time,
             )
 
-            if self.instance.pk:
-                exists = exists.exclude(pk=self.instance.pk)
+            if self.instance.id:
+                exists = exists.exclude(id=self.instance.pk)
 
             if exists.exists():
                 raise forms.ValidationError(

@@ -51,11 +51,11 @@ class Medicine(models.Model):
         ]
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.stock_quantity} available)"
 
     @property
     def is_low_stock(self):
-        return self.quantity <= self.reorder_level
+        return self.stock_quantity <= self.reorder_level
     
     @property
     def is_expired(self):
@@ -63,32 +63,54 @@ class Medicine(models.Model):
 
 
 class Prescription(models.Model):
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Dispensed", "Dispensed"),
+    ]
+
     appointment = models.OneToOneField(
         Appointment,
         on_delete=models.CASCADE,
         related_name="prescription",
     )
+
     doctor = models.ForeignKey(
         "doctors.Doctor",
         on_delete=models.CASCADE,
         related_name="prescriptions",
     )
+
     patient = models.ForeignKey(
         "patients.Patient",
         on_delete=models.CASCADE,
         related_name="prescriptions",
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending",
+    )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+    
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
         return f"Prescription #{self.pk} for {self.patient}"
+    
+    
+    @property
+    def grand_total(self):
+        return sum(
+            item.total_price for item in self.items.all()
+        )
 
 
-class PrescriptionItems(models.Model):
+class PrescriptionItem(models.Model):
     prescription = models.ForeignKey(
         Prescription,
         on_delete=models.CASCADE,
@@ -100,7 +122,7 @@ class PrescriptionItems(models.Model):
         related_name="prescription_items",
     )
 
-    dosage = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=100, blank=True)
     duration = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField()
     instructions = models.TextField(blank=True)
@@ -112,20 +134,24 @@ class PrescriptionItems(models.Model):
     def __str__(self):
         return f"{self.medicine.name} ({self.dosage}) - {self.prescription}"
     
+    @property
+    def total_price(self):
+        return self.quantity * self.medicine.price
+    
     
 
 
 
 class StockTransaction(models.Model):
     
-    STOCK_IN = "IN"
-    STOCK_OUT = "OUT"
-    
+    STOCK_IN = "STOCK_IN"
+    STOCK_OUT = "STOCK_OUT"
+
     TRANSACTION_TYPES = (
-        ("STOCK_IN", "Stock In"),
-        ("STOCK_OUT", "Stock Out")
+        (STOCK_IN, "Stock In"),
+        (STOCK_OUT, "Stock Out"),
     )
-    
+        
     medicine = models.ForeignKey(
         Medicine,
         on_delete= models.CASCADE,
@@ -155,20 +181,24 @@ class StockTransaction(models.Model):
         if not self.id:
             if self.transaction_type == self.STOCK_IN:
                 self.medicine.stock_quantity += self.quantity
+
             elif self.transaction_type == self.STOCK_OUT:
                 if self.medicine.stock_quantity < self.quantity:
                     raise ValidationError(
                         "Insufficient stock available."
                     )
+
                 self.medicine.stock_quantity -= self.quantity
+
             self.medicine.save()
+
         super().save(*args, **kwargs)
         
     @property
     def stock_status(self):
-        if self.quantity == 0:
+        if self.medicine.stock_quantity == 0:
             return "out"
-        elif self.quantity <= self.minimum_stock:
+        elif self.medicine.stock_quantity <= self.medicine.minimum_stock:
             return "low"
         return "available"
         
