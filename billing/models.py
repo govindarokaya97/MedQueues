@@ -3,8 +3,8 @@ from patients.models import Patient
 from appointments.models import Appointment
 from django.utils import timezone
 from django.conf import settings
+from decimal import Decimal
 
-# Create your models here.
 class Bill(models.Model):
     PAYMENT_METHODS = [
         ("Cash", "Cash"),
@@ -34,13 +34,37 @@ class Bill(models.Model):
 
     invoice_number = models.CharField(max_length=20, unique=True)
 
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    discount = models.DecimalField(max_digits=10, decimal_places=2)
-    tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    from decimal import Decimal
 
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal("0.00")
+    )
 
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    discount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal("0.00")
+    )
+
+    tax = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal("0.00")
+    )
+
+    total_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal("0.00")
+    )
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHODS,
+        blank=True,
+        default="Cash"
+    )
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='Pending')
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -57,6 +81,8 @@ class Bill(models.Model):
     def __str__(self):
         return self.invoice_number
 
+    from decimal import Decimal
+
     def save(self, *args, **kwargs):
         if not self.invoice_number:
             today = timezone.now().strftime("%Y%m%d")
@@ -66,10 +92,19 @@ class Bill(models.Model):
 
             self.invoice_number = f"INV-{today}-{last_bill:04d}"
 
-        self.total_amount = self.amount - self.discount + self.tax
+        amount = self.amount or Decimal("0.00")
+        discount = self.discount or Decimal("0.00")
+        tax = self.tax or Decimal("0.00")
+
+        self.total_amount = amount - discount + tax
 
         super().save(*args, **kwargs)
-
+            
+        
+    @property
+    def subtotal(self):
+        return sum(item.subtotal for item in self.items.all())
+    
 class BillItem(models.Model):
     bill = models.ForeignKey(
         Bill,
@@ -85,16 +120,8 @@ class BillItem(models.Model):
 
     subtotal = models.DecimalField(max_digits=10, decimal_places=2 )
 
-    def save(*args, **kwargs):
-        self.subtotal=self.quantity * self.unit_price
+    def save(self, *args, **kwargs):
+        self.subtotal = self.quantity * self.unit_price
         super().save(*args, **kwargs)
 
 
-    @property
-    def grand_total(self):
-        subtotal = sum(
-            item.subtotal
-            for item in self.items.all()
-        )
-
-        return subtotal - self.discount + self.tax

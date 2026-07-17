@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %} Assign Technician {% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+
+            <h4> Assign Laboratory Technician </h4>
+        </div>
+
+        <div class="card-body">
+            <p>
+                <strong>Patient : </strong>
+                {{ lab_request.name }}
+            </p>
+
+            <p>
+                <strong>Doctor : </strong>
+                {{ lab_request.doctor }}
+            </p>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <button class="btn btn-success">
+                    Assign
+                </button>
+
+                <a href="{% url 'request_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -84,9 +84,15 @@ def appointment_create(request):
 @role_required("admin", "doctor", "patient")
 def appointment_detail(request, id):
     appointment = get_object_or_404(Appointment, id=id)
+    
+    try:
+        lab_requests = appointment.labrequest
+    except:
+        lab_requests = None
 
     return render(request,"appointments/appointments_detail.html",{
-        "appointment":appointment
+        "appointment":appointment,
+        "lab_requests" : lab_requests
     })
 
 

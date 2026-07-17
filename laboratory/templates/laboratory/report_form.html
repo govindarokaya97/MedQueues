@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h4>Laboratory Report</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <p>
+
+                <strong>Patient:</strong>
+
+                {{ lab_request.patient }}
+
+            </p>
+
+            <p>
+
+                <strong>Doctor:</strong>
+
+                {{ lab_request.doctor }}
+
+            </p>
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button class="btn btn-success">
+
+                    Save Report
+
+                </button>
+
+                <a href="{% url 'request_list' %}" class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

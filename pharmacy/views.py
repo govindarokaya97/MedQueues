@@ -131,6 +131,7 @@ class StockTransactionCreativeView(CreateView):
         return response
         
             
+@transaction.atomic
 def prescription_create(request, appointment_id):
 
     appointment = get_object_or_404(
@@ -182,8 +183,22 @@ def prescription_create(request, appointment_id):
 
             # Save medicine items
             formset.instance = prescription
-            formset.save()
+            items = formset.save()
 
+            # Deduct the prescribed quantity from stock now that
+            # the items are confirmed, and keep an audit trail.
+            for item in items:
+                medicine = item.medicine
+                medicine.stock_quantity -= item.quantity
+                medicine.save(update_fields=["stock_quantity"])
+
+                StockTransaction.objects.create(
+                    medicine=medicine,
+                    transaction_type=StockTransaction.STOCK_OUT,
+                    quantity=item.quantity,
+                    remarks=f"Prescription #{prescription.id}",
+                    performed_by=request.user,
+                )
 
             messages.success(
                 request,
@@ -267,66 +282,8 @@ def prescription_dispense(request, id):
         )
 
 
-    # Check stock first
-    for item in prescription.items.select_related(
-        "medicine"
-    ):
-
-        if item.quantity > item.medicine.stock_quantity:
-
-            messages.error(
-                request,
-
-                f"Not enough stock for "
-                f"{item.medicine.name}. "
-                f"Available: "
-                f"{item.medicine.stock_quantity}"
-            )
-
-
-            return redirect(
-                "prescription_detail",
-                id=prescription.id
-            )
-
-
-    # Remove stock
-    for item in prescription.items.select_related(
-        "medicine"
-    ):
-
-        medicine = item.medicine
-
-
-        medicine.stock_quantity -= item.quantity
-
-        medicine.save(
-            update_fields=[
-                "stock_quantity"
-            ]
-        )
-
-
-        # Record stock transaction
-        StockTransaction.objects.create(
-
-            medicine=medicine,
-
-            transaction_type=(
-                StockTransaction.STOCK_OUT
-            ),
-
-            quantity=item.quantity,
-
-            remarks=(
-                f"Prescription #{prescription.id}"
-            ),
-
-            performed_by=request.user,
-
-        )
-
-
+    # Stock was already deducted when the prescription was created,
+    # so dispensing just confirms hand-off to the patient.
     prescription.status = "Dispensed"
 
     prescription.save(

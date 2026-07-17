@@ -100,7 +100,7 @@ class Prescription(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Prescription #{self.pk} for {self.patient}"
+        return f"Prescription #{self.id} for {self.patient}"
     
     
     @property
