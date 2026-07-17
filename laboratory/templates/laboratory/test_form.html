@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Test{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>
+
+                {% if object %}
+
+                Update Laboratory Test
+
+                {% else %}
+
+                Add Laboratory Test
+
+                {% endif %}
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>Test Name</label>
+                        {{ form.name }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Test Code</label>
+                        {{ form.code }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Category</label>
+                        {{ form.category }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Price</label>
+                        {{ form.price }}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Normal Range</label>
+                        {{ form.normal_range }}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Active</label>
+                        {{ form.active }}
+                    </div>
+
+                </div>
+
+                <button class="btn btn-success">
+
+                    Save
+
+                </button>
+
+                <a href="{% url 'test_list' %}" class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

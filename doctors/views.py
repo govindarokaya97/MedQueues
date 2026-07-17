@@ -12,6 +12,7 @@ from accounts.decorators import role_required
 from django.core.exceptions import ValidationError
 from django.utils.crypto import get_random_string
 from django.core.paginator import Paginator
+from laboratory.models import LabRequest
 
 
 # Create your views here.
@@ -101,6 +102,10 @@ def doctor_create(request):
 
 @role_required("admin", "doctor")
 def doctor_detail(request, id):
+    doctor = request.user.doctor
+    
+    lab_requests = LabRequest.objects.filter(doctor=doctor)
+    
     if request.user.role == "doctor":
         doctor = get_object_or_404(Doctor, user=request.user)
     else:
@@ -109,7 +114,9 @@ def doctor_detail(request, id):
     return render(
         request,
         "doctors/doctor_detail.html",
-        {"doctor": doctor},
+        {"doctor": doctor,
+         "lab_requests":lab_requests,
+        }
     )
 
 
@@ -131,6 +138,7 @@ def doctor_update(request, id):
     context = {
         "doctor": doctor,
         "doctor_form": doctor_form,
+        
     }
 
     return render(request, "doctors/doctor_form.html", context)

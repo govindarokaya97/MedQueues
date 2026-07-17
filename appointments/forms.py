@@ -31,7 +31,7 @@ class AppointmentForm(forms.ModelForm):
             )
 
             if self.instance.id:
-                exists = exists.exclude(id=self.instance.pk)
+                exists = exists.exclude(id=self.instance.id)
 
             if exists.exists():
                 raise forms.ValidationError(

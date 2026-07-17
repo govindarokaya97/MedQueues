@@ -44,6 +44,16 @@
 
             {% endif %}
 
+
+            {% if lab_request %}
+            <a href="{% url 'report_detail' lab_request.id %}">
+                View Lab Report
+            </a>
+            {% endif %}
+
+            <a href="{% url 'generate_bill' appointment.id %}" class="btn btn-success">
+                Generate Bill
+            </a>
         </div>
 
     </div>

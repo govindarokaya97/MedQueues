@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Laboratory Test Details{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-info text-white">
+
+            <h4>Laboratory Test Details</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="220">Test Name</th>
+                    <td>{{ test.name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Test Code</th>
+                    <td>{{ test.code }}</td>
+                </tr>
+
+                <tr>
+                    <th>Category</th>
+                    <td>{{ test.category }}</td>
+                </tr>
+
+                <tr>
+                    <th>Price</th>
+                    <td>Rs. {{ test.price }}</td>
+                </tr>
+
+                <tr>
+                    <th>Normal Range</th>
+                    <td>{{ test.normal_range }}</td>
+                </tr>
+
+                <tr>
+                    <th>Description</th>
+                    <td>{{ test.description }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+
+                    <td>
+
+                        {% if test.active %}
+                        <span class="badge bg-success">
+                            Active
+                        </span>
+                        {% else %}
+                        <span class="badge bg-danger">
+                            Inactive
+                        </span>
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <th>Created At</th>
+                    <td>{{ test.created_at|date:"d M Y H:i" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Last Updated</th>
+                    <td>{{ test.updated_at|date:"d M Y H:i" }}</td>
+                </tr>
+
+            </table>
+
+            <div class="mt-3">
+
+                <a href="{% url 'test_edit' test.id %}" class="btn btn-warning">
+
+                    Edit
+
+                </a>
+
+                <a href="{% url 'test_list' %}" class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

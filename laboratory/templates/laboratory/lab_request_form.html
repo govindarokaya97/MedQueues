@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Create Lab Request{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Create Laboratory Request</h2>
+
+        <a href="{% url 'request_list' %}" class="btn btn-secondary">
+            Back to Requests
+        </a>
+    </div>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Request Information</h5>
+            </div>
+
+            <div class="card-body">
+
+                {{ form.as_p }}
+
+            </div>
+        </div>
+
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+                <h5>Laboratory Tests</h5>
+            </div>
+
+            <div class="card-body">
+
+                {{ formset.management_form }}
+
+                <div id="formset-container">
+
+                    {% for form in formset %}
+
+                    <div class="test-form border rounded p-3 mb-3">
+
+                        {{ form.as_p }}
+
+                        {% if formset.can_delete %}
+                        <div class="form-check">
+                            {{ form.DELETE }}
+                            <label class="form-check-label">
+                                Remove
+                            </label>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <button type="button" id="add-test" class="btn btn-outline-primary">
+                    + Add Another Test
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="d-flex gap-2">
+
+            <button type="submit" class="btn btn-primary">
+                Save Lab Request
+            </button>
+
+            <a href="{% url 'request_list' %}" class="btn btn-secondary">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const container = document.getElementById("formset-container");
+        const addButton = document.getElementById("add-test");
+
+        const totalForms =
+            document.querySelector("#id_items-TOTAL_FORMS");
+
+        addButton.addEventListener("click", function () {
+
+            const formCount = parseInt(totalForms.value);
+
+            const firstForm =
+                container.querySelector(".test-form");
+
+            const newForm =
+                firstForm.cloneNode(true);
+
+            newForm.innerHTML =
+                newForm.innerHTML.replace(
+                    /items-\d+-/g,
+                    `items-${formCount}-`
+                );
+
+            newForm.innerHTML =
+                newForm.innerHTML.replace(
+                    /id_items-\d+-/g,
+                    `id_items-${formCount}-`
+                );
+
+            container.appendChild(newForm);
+
+            totalForms.value = formCount + 1;
+
+        });
+
+    });
+
+</script>
+
+{% endblock %}

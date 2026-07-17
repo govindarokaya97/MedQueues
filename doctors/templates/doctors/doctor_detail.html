@@ -118,5 +118,26 @@
         {% endfor %}
     </table>
 
+    <h4> Laboratory Reqyests </h4>
+    <table>
+        {% for request in lab_requests %}
+        <tr>
+            <td>
+                {{ request.id }}
+            </td>
+
+            <td>
+                {{ request.status }}
+            </td>
+
+            <td>
+                <a href="{% url 'report_detail' request.id %}">
+                    View
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
 </div>
 {% endblock %}

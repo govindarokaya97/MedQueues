@@ -9,6 +9,7 @@ from accounts.models import CustomUser
 from accounts.utils import generate_username
 from accounts.decorators import role_required
 from django.utils.crypto import get_random_string
+from laboratory.models import LabRequest
 
 
 
@@ -86,8 +87,11 @@ def patient_create(request):
 @role_required("admin","doctor")
 def patient_detail(request, id):
     patient = get_object_or_404(Patient, id=id)
+    lab_requests = LabRequest.objects.filter(patient=patient)
+    
     return render(request, 'patients/patient_detail.html', {
-        'patient': patient
+        'patient': patient,
+        'lab_requests':lab_requests
         })
 
 
