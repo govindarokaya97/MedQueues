@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+
+{% block title %}
+Prescription List
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    ```
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2>Prescription List</h2>
+            <p class="text-muted mb-0">
+                Manage all patient prescriptions
+            </p>
+        </div>
+
+        <a href="{% url 'prescription_list' %}" class="btn btn-primary">
+            Refresh
+        </a>
+
+    </div>
+
+
+    {% if messages %}
+
+    {% for message in messages %}
+
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+
+        {{ message }}
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+    </div>
+
+    {% endfor %}
+
+    {% endif %}
+
+
+    {% if prescriptions %}
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Patient</th>
+
+                    <th>Doctor</th>
+
+                    <th>Appointment</th>
+
+                    <th>Medicines</th>
+
+                    <th>Total</th>
+
+                    <th>Status</th>
+
+                    <th>Created</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for prescription in prescriptions %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            #{{ prescription.id }}
+                        </strong>
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            {{ prescription.patient }}
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {% if prescription.patient.phone %}
+                            {{ prescription.patient.phone }}
+                            {% endif %}
+
+                        </small>
+
+                    </td>
+
+
+                    <td>
+
+                        Dr.
+                        {{ prescription.doctor }}
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            Appointment #{{ prescription.appointment.id }}
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ prescription.appointment.appointment_date }}
+
+                        </small>
+
+                    </td>
+
+
+                    <td>
+
+                        {% if prescription.items.all %}
+
+                        <ul class="list-unstyled mb-0">
+
+                            {% for item in prescription.items.all %}
+
+                            <li class="mb-2">
+
+                                <strong>
+                                    {{ item.medicine.name }}
+                                </strong>
+
+                                <br>
+
+                                <small>
+
+                                    Qty:
+                                    <strong>
+                                        {{ item.quantity }}
+                                    </strong>
+
+                                    {% if item.dosage %}
+                                    | {{ item.dosage }}
+                                    {% endif %}
+
+                                    {% if item.duration %}
+                                    | {{ item.duration }}
+                                    {% endif %}
+
+                                </small>
+
+                                {% if item.instructions %}
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    {{ item.instructions }}
+
+                                </small>
+
+                                {% endif %}
+
+                            </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                        {% else %}
+
+                        <span class="text-muted">
+                            No medicines
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+
+                            Rs.
+                            {{ prescription.grand_total }}
+
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        {% if prescription.status == "Pending" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            Pending
+
+                        </span>
+
+                        {% elif prescription.status == "Dispensed" %}
+
+                        <span class="badge bg-success">
+
+                            Dispensed
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            {{ prescription.status }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <small>
+
+                            {{ prescription.created_at|date:"Y-m-d" }}
+
+                            <br>
+
+                            {{ prescription.created_at|date:"H:i" }}
+
+                        </small>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="d-flex flex-column gap-2">
+
+                            <a href="{% url 'prescription_detail' prescription.id %}"
+                                class="btn btn-sm btn-info text-white">
+
+                                View
+
+                            </a>
+
+
+                            {% if prescription.status == "Pending" %}
+
+                            <a href="{% url 'prescription_dispense' prescription.id %}" class="btn btn-sm btn-success"
+                                onclick="return confirm(
+                                    'Are you sure you want to dispense this prescription?'
+                                );">
+
+                                Dispense
+
+                            </a>
+
+                            {% else %}
+
+                            <button class="btn btn-sm btn-secondary" disabled>
+
+                                Already Dispensed
+
+                            </button>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="card shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <h4>
+                No Prescriptions Found
+            </h4>
+
+            <p class="text-muted">
+
+                No prescriptions have been created yet.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <hr class="my-5">
+
+
+    <h4 class="mb-3">
+        Appointments Without Prescription
+    </h4>
+
+
+    {% if appointments %}
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered align-middle">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th>Appointment ID</th>
+
+                    <th>Patient</th>
+
+                    <th>Doctor</th>
+
+                    <th>Date</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for appointment in appointments %}
+
+                {% if not appointment.prescription %}
+
+                <tr>
+
+                    <td>
+
+                        #{{ appointment.id }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ appointment.patient }}
+
+                    </td>
+
+
+                    <td>
+
+                        Dr.
+                        {{ appointment.doctor }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ appointment.appointment_date }}
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge bg-info">
+
+                            No Prescription
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <a href="{% url 'prescription_create' appointment.id %}" class="btn btn-sm btn-primary">
+
+                            + Create Prescription
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endif %}
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <p class="text-muted">
+
+        No appointments available.
+
+    </p>
+
+    {% endif %}
+    ```
+
+</div>
+
+{% endblock %}

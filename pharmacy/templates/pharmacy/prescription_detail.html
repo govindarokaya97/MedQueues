@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Prescription Details</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <p>
+                <strong>Patient:</strong>
+                {{ prescription.patient }}
+            </p>
+
+            <p>
+                <strong>Doctor:</strong>
+                {{ prescription.doctor }}
+            </p>
+
+            <p>
+                <strong>Appointment:</strong>
+                {{ prescription.appointment }}
+            </p>
+
+            <p>
+                <strong>Created:</strong>
+                {{ prescription.created_at }}
+            </p>
+
+        </div>
+    </div>
+
+    <h4>Prescription Medicines</h4>
+
+    {% for item in prescription.items.all %}
+
+    <div class="card mb-2">
+        <div class="card-body">
+
+            <p>
+                <strong>Medicine:</strong>
+                {{ item.medicine }}
+            </p>
+
+            <p>
+                <strong>Dosage:</strong>
+                {{ item.dosage }}
+            </p>
+
+            <p>
+                <strong>Duration:</strong>
+                {{ item.duration }}
+            </p>
+
+            <p>
+                <strong>Quantity:</strong>
+                {{ item.quantity }}
+            </p>
+
+            <p>
+                <strong>Instructions:</strong>
+                {{ item.instructions }}
+            </p>
+
+        </div>
+    </div>
+
+    {% empty %}
+
+    <p>No medicines added.</p>
+
+    {% endfor %}
+
+    <a href="{% url 'prescription_list' %}" class="btn btn-secondary">
+        Back to Prescriptions
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %} Medicine Form {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+
+            <h3> Medicine Form </h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-success"> Save </button>
+
+                <a href="{% url 'medicine_list' %}" class="btn btn-secondary"> Cancel </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const addButton = document.getElementById("add-form");
+        const table = document.getElementById("medicine-table");
+
+        const totalForms = document.querySelector(
+            'input[name$="-TOTAL_FORMS"]'
+        );
+
+        const template = document.getElementById(
+            "empty-form-template"
+        ).innerHTML;
+
+
+        if (!addButton) {
+            console.error("Add Medicine button not found");
+            return;
+        }
+
+
+        if (!totalForms) {
+            console.error("TOTAL_FORMS not found");
+            return;
+        }
+
+
+        addButton.addEventListener("click", function () {
+
+            const formIndex = parseInt(
+                totalForms.value,
+                10
+            );
+
+
+            const newRowHTML = template.replace(
+                /__prefix__/g,
+                formIndex
+            );
+
+
+            const temp = document.createElement("tbody");
+
+            temp.innerHTML = newRowHTML.trim();
+
+
+            const newRow = temp.querySelector("tr");
+
+
+            table.appendChild(newRow);
+
+
+            totalForms.value = formIndex + 1;
+
+
+            console.log(
+                "Medicine row added:",
+                formIndex
+            );
+
+        });
+
+    });
+</script>
+
+{% endblock %}

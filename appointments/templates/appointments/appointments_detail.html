@@ -28,6 +28,22 @@
 
             <p><strong>Status:</strong> {{ appointment.status }}</p>
 
+            <hr>
+
+            {% if appointment.prescription %}
+
+            <a href="{% url 'prescription_detail' id=appointment.prescription.id %}" class="btn btn-success">
+                View Prescription
+            </a>
+
+            {% else %}
+
+            <a href="{% url 'prescription_create' appointment_id=appointment.id %}" class="btn btn-primary">
+                + Create Prescription
+            </a>
+
+            {% endif %}
+
         </div>
 
     </div>

@@ -31,11 +31,14 @@ class BillCreateView(CreateView):
 
 class BillDetailView(DetailView):
     model = Bill
+    pk_url_kwarg = "id"
+    
     template_name = "billing/bill_detail.html"
 
 
 class BillUpdateView(UpdateView):
     model = Bill
+    pk_url_kwarg = "id"
     fields = [
         "amount",
         "discount",
@@ -50,6 +53,7 @@ class BillUpdateView(UpdateView):
 
 class BillDeleteView(DeleteView):
     model = Bill
+    pk_url_kwarg = "id"
     template_name = "billing/bill_confirm_delete.html"
     success_url = reverse_lazy("bill_list")
 

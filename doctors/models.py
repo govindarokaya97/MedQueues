@@ -76,7 +76,7 @@ class DoctorSchedule(models.Model):
             overlapping = DoctorSchedule.objects.filter(
                 doctor_id=self.doctor_id,
                 day=self.day,
-            ).exclude(pk=self.pk)
+            ).exclude(id=self.id)
             for slot in overlapping:
                 if self.start_time < slot.end_time and slot.start_time < self.end_time:
                     raise ValidationError(

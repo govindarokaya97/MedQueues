@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} Delete Medicine {% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white ">
+            Delete Medicine
+        </div>
+        <div class="card-body">
+
+            <p> Are you sure you want to delete <strong> {{ object.name }} </strong> ?</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger"> Delete </button>
+
+                <a href="{% url 'medicine_list' %}"> Cancel </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
