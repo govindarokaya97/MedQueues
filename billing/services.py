@@ -1,53 +1,49 @@
 from .models import Bill, BillItem
 from laboratory.models import LabRequest
 from pharmacy.models import Prescription
+from django.db import transaction
 
 
+@transaction.atomic
 def generate_bill(appointment):
 
-    # Prevent duplicate bill
-    if hasattr(appointment, "bill"):
-        return appointment.bill
-
-    bill = Bill.objects.create(
-        patient=appointment.patient,
-        appointment=appointment,
-        discount=0,
-        tax=0,
-        payment_method="Cash",
-        payment_status="Pending",
+    bill, created= Bill.objects.get_or_create(
+        appointment = appointment,
+        defaults={
+            "patient": appointment.patient,
+        }
     )
-
+    
+    if not created:
+        return bill
     # -------------------------
     # Doctor Consultation Fee
     # -------------------------
-
-    doctor_fee = appointment.doctor.consultation_fee
-
+    
     BillItem.objects.create(
         bill=bill,
         service_name="Doctor Consultation",
+        service_type="Consultation",
         quantity=1,
-        unit_price=doctor_fee
+        unit_price=appointment.doctor.consultation_fee,
     )
 
     # -------------------------
     # Laboratory Charges
     # -------------------------
 
-    lab_request = LabRequest.objects.filter(
+    lab_requests = LabRequest.objects.filter(
         appointment=appointment
-    ).first()
+    )
 
-    if lab_request:
-
-        for item in lab_request.items.select_related(
-            "lab_test"
-        ):
+    for request in lab_requests:
+        
+        for item in request.items.all():
 
             BillItem.objects.create(
                 bill=bill,
                 service_name=item.lab_test.name,
+                service_type="Laboratory",
                 quantity=1,
                 unit_price=item.lab_test.price
             )
@@ -55,28 +51,25 @@ def generate_bill(appointment):
     # -------------------------
     # Pharmacy Charges
     # -------------------------
+    try:
+        prescription = appointment.prescription
 
-    prescription = Prescription.objects.filter(
-        appointment=appointment
-    ).first()
-
-    if prescription:
-
-        for item in prescription.items.select_related(
-            "medicine"
-        ):
+        for item in prescription.items.all():
 
             BillItem.objects.create(
                 bill=bill,
                 service_name=item.medicine.name,
+                service_type="Medicine",
                 quantity=item.quantity,
                 unit_price=item.medicine.price
             )
+    
+    except Prescription.DoesNotExist:
+        pass
 
-    # After creating all BillItems
     bill.amount = bill.subtotal
     bill.total_amount = bill.grand_total
-    bill.save()
+    bill.save(update_fields=["amount","total_amount"])
 
     return bill
 

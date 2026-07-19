@@ -20,33 +20,176 @@
     </strong>
 </p>
 <hr>
-<div class="row mb-4">
+<div class="row">
+
     <div class="col-md-3">
-        <div class="card bg-primary text-white h-100">
-            <div class="card-body text-center">
-                <h3>{{ today }}</h3>
-                <p class="mb-0">Today's Appointments</p>
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Total Bills</h5>
+                <h2>{{ total_bills }}</h2>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card bg-warning text-dark h-100">
-            <div class="card-body text-center">
-                <h3>{{ pending }}</h3>
-                <p class="mb-0">Pending</p>
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Paid Bills</h5>
+                <h2>{{ paid_bill_count }}</h2>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card bg-success text-white h-100">
-            <div class="card-body text-center">
-                <h2>{{ completed }}</h2>
-                <p class="mb-0">Completed</p>
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Pending Bills</h5>
+                <h2>{{ pending_bill_count }}</h2>
             </div>
         </div>
     </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Total Revenue</h5>
+                <h2>Rs. {{ total_revenue }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Today's Revenue</h5>
+                <h2>Rs. {{ today_revenue }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5>Monthly Revenue</h5>
+                <h2>Rs. {{ monthly_revenue }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card mt-4">
+
+        <div class="card-header">
+
+            Recent Payments
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table">
+
+                <tr>
+
+                    <th>Invoice</th>
+
+                    <th>Patient</th>
+
+                    <th>Amount</th>
+
+                    <th>Method</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+                {% for bill in recent_payments %}
+
+                <tr>
+
+                    <td>{{ bill.invoice_number }}</td>
+
+                    <td>{{ bill.patient }}</td>
+
+                    <td>Rs. {{ bill.total_amount }}</td>
+
+                    <td>{{ bill.payment_method }}</td>
+
+                    <td>{{ bill.payment_date|date:"d M Y" }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5">
+
+                        No Payments Yet
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="card mt-4">
+
+        <div class="card-header">
+
+            Billing Statistics
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table">
+
+                <tr>
+
+                    <th>Total Bills</th>
+
+                    <td>{{ bill_count }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Paid Bills</th>
+
+                    <td>{{ paid_bill_count }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Pending Bills</th>
+
+                    <td>{{ pending_bill_count }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Monthly Revenue</th>
+
+                    <td>Rs. {{ monthly_revenue }}</td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
 </div>
 <div class="row g-3">
 
