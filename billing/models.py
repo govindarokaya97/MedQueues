@@ -29,12 +29,13 @@ class Bill(models.Model):
 
     appointment = models.OneToOneField(
         Appointment,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="bill"
     )
 
     invoice_number = models.CharField(max_length=20, unique=True)
 
-    from decimal import Decimal
+    
 
     amount = models.DecimalField(
         max_digits=10,
@@ -80,30 +81,29 @@ class Bill(models.Model):
 
     def __str__(self):
         return self.invoice_number
-
-    from decimal import Decimal
-
-    def save(self, *args, **kwargs):
-        if not self.invoice_number:
-            today = timezone.now().strftime("%Y%m%d")
-            last_bill = Bill.objects.filter(
-                invoice_number__startswith=f"INV-{today}"
-            ).count() + 1
-
-            self.invoice_number = f"INV-{today}-{last_bill:04d}"
-
-        amount = self.amount or Decimal("0.00")
-        discount = self.discount or Decimal("0.00")
-        tax = self.tax or Decimal("0.00")
-
-        self.total_amount = amount - discount + tax
-
-        super().save(*args, **kwargs)
-            
-        
+          
     @property
     def subtotal(self):
         return sum(item.subtotal for item in self.items.all())
+
+    @property
+    def grand_total(self):
+        return self.subtotal + self.tax - self.discount
+
+
+    def save(self,*args, **kwargs):
+        if not self.invoice_number:
+            today = timezone.now().strftime("%Y%m%d")
+            
+            last_bill = Bill.objects.filter(
+                invoice_number__startswith=f"INV-{today}"
+            ).count() +1
+            
+            self.invoice_number = f"INV-{today}-{last_bill:04d}"
+
+        super().save(*args, **kwargs)
+                
+
     
 class BillItem(models.Model):
     bill = models.ForeignKey(
@@ -118,10 +118,28 @@ class BillItem(models.Model):
 
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2 )
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0 )
+    
 
+    SERVICE_TYPE_CHOICES = (
+        ("CONSULTATION", "Consultation"),
+        ("MEDICINE", "Medicine"),
+        ("LABORATORY", "Laboratory"),
+        ("ROOM", "Room"),
+        ("OTHER", "Other"),
+    )
+        
+    service_type = models.CharField(
+        max_length=30,
+        choices=SERVICE_TYPE_CHOICES,
+        default="OTHER",
+    )
+
+
+     
     def save(self, *args, **kwargs):
         self.subtotal = self.quantity * self.unit_price
         super().save(*args, **kwargs)
+                
 
 

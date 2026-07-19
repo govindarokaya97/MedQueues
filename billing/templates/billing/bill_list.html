@@ -1,39 +1,137 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}
+Billing
+{% endblock %}
 
 {% block content %}
-<h2> Billing List </h2>
 
+<div class="container mt-4">
 
-<table class="table table-bordered mt-3">
-    <thead>
-        <tr>
-            <th>Invoice</th>
-            <th>Patient</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Actions</th>
+    <h2>Billing</h2>
 
-        </tr>
-    </thead>
+    <form method="get" class="row mb-3">
 
-    <tbody>
-        {% for bill in bills %}
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search Invoice"
+                value="{{ request.GET.search }}">
+        </div>
 
-        <tr>
-            <td> {{ bill.invoice_number }}</td>
-            <td> {{ bill.patient }}</td>
-            <td> {{ bill.total_amount }}</td>
-            <td> {{ bill.payment_status }}</td>
+        <div class="col-md-3">
 
-            <td> <a href="{% url 'bill_detail' bill.id %}" class="btn btn-info btn-sm">View</a></td>
-            <td> <a href="{% url 'bill_edit' bill.id %}" class="btn btn-warning btn-sm">Edit</a></td>
-            <td> <a href="{% url 'bill_delete' bill.id %}" class="btn btn-danger btn-sm">Delete</a></td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No bills available.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            <select name="status" class="form-select">
+
+                <option value="">All Status</option>
+
+                <option value="Pending">Pending</option>
+
+                <option value="Paid">Paid</option>
+
+                <option value="Cancelled">Cancelled</option>
+
+                <option value="Refunded">Refunded</option>
+
+            </select>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button class="btn btn-primary">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Invoice</th>
+
+                <th>Patient</th>
+
+                <th>Appointment</th>
+
+                <th>Total</th>
+
+                <th>Status</th>
+
+                <th>Date</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td>{{ bill.invoice_number }}</td>
+
+                <td>{{ bill.patient }}</td>
+
+                <td>{{ bill.appointment }}</td>
+
+                <td>Rs. {{ bill.total_amount }}</td>
+
+                <td>
+
+                    <span class="badge bg-primary">
+
+                        {{ bill.payment_status }}
+
+                    </span>
+
+                </td>
+
+                <td>{{ bill.created_at|date:"M d, Y" }}</td>
+
+                <td>
+
+                    <a href="{% url 'bill_detail' bill.id %}" class="btn btn-warning btn-sm">
+
+                        View
+
+                    </a>
+                    <a href="{% url 'bill_delete' bill.id %}" class="btn btn-danger btn-sm">
+
+                        Delete
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="7">
+
+                    No Bills Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
 {% endblock %}

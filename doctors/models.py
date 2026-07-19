@@ -23,7 +23,7 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=100)
     qualification = models.CharField(max_length=100)
     experience = models.PositiveIntegerField(help_text="Years of experience")
-    consultation_fee = models.DecimalField(max_digits=8, decimal_places=2)
+    consultation_fee = models.DecimalField(max_digits=10, decimal_places=2)
 
     phone = models.CharField(max_length=15)
     address = models.TextField(blank=True)
