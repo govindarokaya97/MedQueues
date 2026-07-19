@@ -2,8 +2,9 @@ from django.db.models import Sum
 from billing.models import Bill
 from django.utils import timezone
 
+from appointments.models import Appointment
 
-def get_billing_statistics():
+def get_dashboard_statistics():
     today = timezone.now().date()
 
     return {
@@ -19,3 +20,16 @@ def get_billing_statistics():
             payment_date__date=today,
         ).aggregate(total=Sum("total_amount"))["total"] or 0,
     }
+    
+def get_today_appointments():
+    
+    today = timezone.now().date()
+    
+    return(
+        Appointment.objects.filter(
+            appointment_date=today
+        ).select_related(
+            "patient",
+            "doctor",
+        ).order_by("appointment_id")
+    )

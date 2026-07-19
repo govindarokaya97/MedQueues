@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, F
 from django.utils import timezone
 from django.views.generic import TemplateView
 
@@ -8,10 +8,9 @@ from patients.models import Patient
 from doctors.models import Doctor
 from appointments.models import Appointment
 from billing.models import Bill
-from pharmacy.models import Medicine
-from laboratory.models import LabRequest
+from pharmacy.models import Medicine, Prescription
+from laboratory.models import LabRequest, LabReport
 
-from .sevices import get_billing_statistics
 
 
 class DashboardView(TemplateView):
@@ -25,6 +24,8 @@ class DashboardView(TemplateView):
             return redirect("dashboard")
 
         return super().dispatch(request, *args, **kwargs)
+
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,6 +73,7 @@ class DashboardView(TemplateView):
             .annotate(total=Count("id"))
         )
         
+        # Total Revenue
         context["total_revenue"] = (
             Bill.objects.filter(
                 payment_status ="Paid"
@@ -80,7 +82,7 @@ class DashboardView(TemplateView):
             )["total"] or 0
         )
         
-                # Today's revenue
+        # Today's revenue
         context["today_revenue"] = (
             Bill.objects
             .filter(
@@ -105,7 +107,127 @@ class DashboardView(TemplateView):
             )["total"] or 0
         )
         
-        context.update(get_billing_statistics())
+        # Recent Appointments
+        context["recent_appointments"]=(
+            Appointment.objects.filter(
+                appointment_date=today).select_related(
+                    "patient","doctor").order_by(
+                        '-appointment_date',
+                        '-appointment_time',
+                    )
+                )
+        
+        
+        # Recent Prescriptions
+        context["recent_prescriptions"] = {
+            Prescription.objects.select_related(
+                "patient", "doctor"
+            ).order_by("-created_at")[:5]
+        }
+        
+        
+
+        
+        
+        # Recent Bills
+        context["recent_bills"] = {
+            Bill.objects.select_related(
+                "patient", "doctor"
+            ).order_by("-created_at")[:5]
+        }
+        
+        
+        # Medicines Statictics
+        context["total_medicines"] = Medicine.objects.count()
+        
+        context["available_medicines"] = (
+            Medicine.objects.filter(stock_quantity__gt=0).count()
+        )
+        
+        context["out_of_stock"] = (
+            Medicine.objects.filter(stock_quantity=0).count()
+        )
+        
+        context["low_stock"] = (
+            Medicine.objects.filter(
+                stock_quantity__lte=F("reorder_level"),
+                stock_quantity__gt=0
+            ).count()
+        )
+        
+        context["low_stock_medicines"]=(
+            Medicine.objects.filter(
+                stock_quantity__lte=F("reorder_level"),
+                stock_quantity__gt=0,
+            ).order_by("stock_quantity")
+        )
+
+        
+        # Laboratory Statistics
+
+        context["total_lab_requests"] = LabRequest.objects.count()
+
+        context["pending_lab_requests"] = (
+            LabRequest.objects.filter(
+                status="Pending"
+            ).count()
+        )
+
+        context["processing_lab_requests"] = (
+            LabRequest.objects.filter(
+                status="Processing"
+            ).count()
+        )
+
+        context["completed_lab_requests"] = (
+            LabRequest.objects.filter(
+                status="Completed"
+            ).count()
+        )
+
+        context["total_lab_reports"] = LabReport.objects.count()
+        
+                # Recent LabRequests
+        context["recent_lab_requests"] = (
+            LabRequest.objects
+            .select_related(
+                "patient",
+                "doctor",
+                "assigned_to",
+            )
+            .order_by("-requested_date")[:5]
+        )
+        
+        
+        context["recent_lab_reports"] = (
+            LabReport.objects
+            .select_related(
+                "lab_request",
+                "technician",
+            )
+            .order_by("-generated_at")[:5]
+        )
+        
+        
+        context["verified_reports"] = (
+            LabReport.objects.filter(
+                verified_at__isnull=False
+            ).count()
+        )
+
+        context["pending_verification"] = (
+            LabReport.objects.filter(
+                verified_at__isnull=True
+            ).count()
+        )
+                
 
 
-        return context
+        
+        return context 
+
+
+    
+
+    
+    

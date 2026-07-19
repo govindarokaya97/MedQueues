@@ -78,6 +78,215 @@
 
 
     <div class="card mt-4">
+        <div class="card-header">
+            <h5>Today's Appointments</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    {% for appointment in today_appointments %}
+                    <tr>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>{{ appointment.patient }}</td>
+                        <td>{{ appointment.doctor }}</td>
+                        <td>{{ appointment.status }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            No appointments today.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="row mt-4">
+
+            <!-- Recent Appointments -->
+            <div class="col-md-6">
+
+                <div class="card shadow">
+
+                    <div class="card-header bg-primary text-white">
+
+                        Recent Appointments
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <ul class="list-group">
+
+                            {% for appointment in recent_appointments %}
+
+                            <li class="list-group-item">
+
+                                {{ appointment.patient }}
+
+                                <br>
+
+                                <small>
+
+                                    Dr. {{ appointment.doctor }}
+
+                                    |
+
+                                    {{ appointment.created_at|date:"d M Y H:i" }}
+
+                                </small>
+
+                            </li>
+
+                            {% empty %}
+
+                            <li class="list-group-item">
+
+                                No recent appointments
+
+                            </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="col-md-6">
+
+                <div class="card shadow">
+
+                    <div class="card-header bg-success text-white">
+
+                        Recent Prescriptions
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <ul class="list-group">
+
+                            {% for prescription in recent_prescriptions %}
+
+                            <li class="list-group-item">
+
+                                {{ prescription.patient }}
+
+                                <br>
+
+                                <small>
+
+                                    {{ prescription.created_at|date:"d M Y H:i" }}
+
+                                </small>
+
+                            </li>
+
+                            {% empty %}
+
+                            <li class="list-group-item">
+
+                                No recent prescriptions
+
+                            </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning ">
+                    Recent Lab Requests
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group">
+
+                        {% for request in recent_lab_requests %}
+                        <li class="list-group-item">
+                            {{ request.patient }}
+                            <br>
+                            <small>
+                                {{ request.request_date|date:"d M Y H:i"}}
+                            </small>
+                        </li>
+                        {% empty %}
+
+                        <li class="lest-group-item">
+                            No lab requests
+                        </li>
+
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    Recent Bills
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group">
+
+                        {% for bill in recent_bills %}
+                        <li class="list-group-item">
+                            {{ bill.invoice_number }}
+                            <br>
+                            <small>
+                                {{ bill.total_amount }}
+                            </small>
+                        </li>
+                        {% empty %}
+
+                        <li class="lest-group-item">
+                            No bills
+                        </li>
+
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
 
         <div class="card-header">
 
@@ -189,6 +398,72 @@
 
     </div>
 
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-success border-4">
+            <div class="card-body">
+                <h6> Total Medicines </h6>
+                <h2>{{ total_medicines }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-warning border-4">
+            <div class="card-body">
+                <h6> Low Stock </h6>
+                <h2>{{ low_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-danger border-4">
+            <div class="card-body">
+                <h6> Out of Stock </h6>
+                <h2>{{ out_of_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card shadow mt-4">
+        <div class="card-header bg-warning">
+            <h5>Low Stock Medicines</h5>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Stock</th>
+                        <th>Reorder Level</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for medicine in low_stock_medicines %}
+                    <tr>
+                        <td>{{ medicine.name }}</td>
+                        <td>{{ medicine.stock_quantity }}</td>
+                        <td>{{ medicine.reorder_level }}</td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">
+                            No low stock medicines.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
 </div>
 <div class="row g-3">
@@ -278,6 +553,225 @@
             </tbody>
         </table>
     </div>
+</div>
+
+
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-primary border-4">
+
+            <div class="card-body">
+
+                <h6>Total Lab Requests</h6>
+
+                <h2>{{ total_lab_requests }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-warning border-4">
+
+            <div class="card-body">
+
+                <h6>Pending</h6>
+
+                <h2>{{ pending_lab_requests }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-info border-4">
+
+            <div class="card-body">
+
+                <h6>Processing</h6>
+
+                <h2>{{ processing_lab_requests }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-success border-4">
+
+            <div class="card-body">
+
+                <h6>Completed</h6>
+
+                <h2>{{ completed_lab_requests }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="col-md-3 mb-3">
+
+    <div class="card shadow border-start border-dark border-4">
+
+        <div class="card-body">
+
+            <h6>Reports Uploaded</h6>
+
+            <h2>{{ total_lab_reports }}</h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-primary text-white">
+
+        <h5>Recent Lab Requests</h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for request in recent_lab_requests %}
+
+                <tr>
+
+                    <td>{{ request.patient }}</td>
+
+                    <td>{{ request.doctor }}</td>
+
+                    <td>{{ request.status }}</td>
+
+                    <td>{{ request.requested_date|date:"d M Y" }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        No laboratory requests found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-success text-white">
+
+        <h5>Recent Laboratory Reports</h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Report</th>
+                    <th>Technician</th>
+                    <th> Report Create Date</th>
+                    <th> Verified Reports</th>
+                    <th> Pending Verification </th>
+
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for report in recent_lab_reports %}
+
+                <tr>
+
+                    <td>{{ report.lab_request }}</td>
+
+                    <td>{{ report.technician }}</td>
+
+                    <td>{{ report.generated_at|date:"d M Y" }}</td>
+                    <td>{{ verified_reports }}</td>
+                    <td>{{ pending_verification }}</td>
+
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="3">
+
+                        No reports uploaded.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
 
 <div class="mb-4">
