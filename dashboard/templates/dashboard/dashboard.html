@@ -19,63 +19,401 @@
         {% endif %}
     </strong>
 </p>
+
+
+
 <hr>
+<div class="row g-3">
+
+    <div class="col-md-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ doctor_count }}</h2>
+                <p>Total Doctors</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-secondary text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ patient_count }}</h2>
+                <p>Total Patients</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-dark text-white h-100">
+            <div class="card-body text-center">
+                <h2>{{ appointment_count }}</h2>
+                <p>Total Appointments</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-3 card mt-4">
+
+    <div class="mb-4">
+
+        <a href="{% url 'doctor_add' %}" class="btn btn-primary">
+            Add Doctor
+        </a>
+
+        <a href="{% url 'patient_add' %}" class="btn btn-success">
+            Add Patient
+        </a>
+
+        <a href="{% url 'appointments_add' %}" class="btn btn-warning">
+            New Appointment
+        </a>
+        <i class="fa-solid fa-user-doctor"></i><i class="fa-solid fa-user"></i><i
+            class="fa-solid fa-calendar-check"></i><i class="fa-solid fa-clock"></i>
+    </div>
+</div>
+
+
+
+{% if low_stock_count %}
+<div class="alert alert-warning shadow">
+    <h5>
+        Low Stock Alert
+    </h5>
+    <p>
+        {{ low_stock }}
+        medicine(s) need to be restocked.
+    </p>
+</div>
+{% endif %}
+
+<div class="card shadow mt-3">
+    <div class="card-header bg-warning">
+        <h5>Medicines Requiring Restock</h5>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Medicine</th>
+                    <th>Current Stock</th>
+                    <th>Reorder Level</th>
+                    <th>Status</th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for medicine in low_stock_medicines %}
+                <tr>
+                    <td>{{ medicine.name }}</td>
+                    <td>{{ medicine.stock_quantity }}</td>
+                    <td>{{ medicine.reorder_level }}</td>
+                    <td>
+                        {% if medicine.stock_quantity == 0 %}
+                        <span class="badge bg-danger"> Out of Stock</span>
+
+                        {% else %}
+                        <span class="badge bg-warning text-dark">
+                            Low Stock
+                        </span>
+
+                        {% endif %}
+
+                        <a href="{% url 'medicine_edit' medicine.id %}" class="badge bg-primary text-dark">
+                            Update Stock
+                        </a>
+                    </td>
+                </tr>
+
+
+
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">
+                        No medicines require restocking.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 <div class="row">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Today's Appointments</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                    </tr>
 
-    <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Total Bills</h5>
-                <h2>{{ total_bills }}</h2>
-            </div>
+                </thead>
+                <tbody>
+
+                    {% for appointment in today_appointments %}
+                    <tr>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>{{ appointment.patient }}</td>
+                        <td>{{ appointment.doctor }}</td>
+                        <td>{{ appointment.status }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            No appointments today.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Paid Bills</h5>
-                <h2>{{ paid_bill_count }}</h2>
-            </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            Latest Doctors
+        </div>
+
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for doctor in latest_doctors %}
+                    <tr>
+                        <td>{{ doctor.user.get_full_name }}</td>
+                        <td>{{ doctor.department }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">No doctors found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header">
+            Latest Patients
+        </div>
+
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="table-light">
+
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in latest_patients %}
+                    <tr>
+                        <td>{{ patient }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>No patients found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Pending Bills</h5>
-                <h2>{{ pending_bill_count }}</h2>
+
+    <div class="row mt-4">
+        <div class="row mt-4">
+
+            <!-- Recent Appointments -->
+            <div class="col-md-6">
+
+                <div class="card shadow">
+
+                    <div class="card-header bg-primary text-white">
+
+                        Recent Appointments
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <ul class="list-group">
+
+                            {% for appointment in recent_appointments %}
+
+                            <li class="list-group-item">
+
+                                {{ appointment.patient }}
+
+                                <br>
+
+                                <small>
+
+                                    Dr. {{ appointment.doctor }}
+
+                                    |
+
+                                    {{ appointment.created_at|date:"d M Y H:i" }}
+
+                                </small>
+
+                            </li>
+
+                            {% empty %}
+
+                            <li class="list-group-item">
+
+                                No recent appointments
+
+                            </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="col-md-6">
+
+                <div class="card shadow">
+
+                    <div class="card-header bg-success text-white">
+
+                        Recent Prescriptions
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <ul class="list-group">
+
+                            {% for prescription in recent_prescriptions %}
+
+                            <li class="list-group-item">
+
+                                {{ prescription.patient }}
+
+                                <br>
+
+                                <small>
+
+                                    {{ prescription.created_at|date:"d M Y H:i" }}
+
+                                </small>
+
+                            </li>
+
+                            {% empty %}
+
+                            <li class="list-group-item">
+
+                                No recent prescriptions
+
+                            </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning ">
+                    Recent Lab Requests
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group">
+
+                        {% for request in recent_lab_requests %}
+                        <li class="list-group-item">
+                            {{ request.patient }}
+                            <br>
+                            <small>
+                                {{ request.request_date|date:"d M Y H:i"}}
+                            </small>
+                        </li>
+                        {% empty %}
+
+                        <li class="lest-group-item">
+                            No lab requests
+                        </li>
+
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    Recent Bills
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group">
+
+                        {% for bill in recent_bills %}
+                        <li class="list-group-item">
+                            {{ bill.invoice_number }}
+                            <br>
+                            <small>
+                                {{ bill.total_amount }}
+                            </small>
+                        </li>
+                        {% empty %}
+
+                        <li class="lest-group-item">
+                            No bills
+                        </li>
+
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Total Revenue</h5>
-                <h2>Rs. {{ total_revenue }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Today's Revenue</h5>
-                <h2>Rs. {{ today_revenue }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Monthly Revenue</h5>
-                <h2>Rs. {{ monthly_revenue }}</h2>
-            </div>
-        </div>
-    </div>
-
 
     <div class="card mt-4">
 
@@ -189,111 +527,501 @@
 
     </div>
 
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-success border-4">
+            <div class="card-body">
+                <h6> Total Medicines </h6>
+                <h2>{{ total_medicines }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-warning border-4">
+            <div class="card-body">
+                <h6> Low Stock </h6>
+                <h2>{{ low_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-danger border-4">
+            <div class="card-body">
+                <h6> Out of Stock </h6>
+                <h2>{{ out_of_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card shadow mt-4">
+        <div class="card-header bg-warning">
+            <h5>Low Stock Medicines</h5>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Stock</th>
+                        <th>Reorder Level</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for medicine in low_stock_medicines %}
+                    <tr>
+                        <td>{{ medicine.name }}</td>
+                        <td>{{ medicine.stock_quantity }}</td>
+                        <td>{{ medicine.reorder_level }}</td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">
+                            No low stock medicines.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
 </div>
-<div class="row g-3">
 
-    <div class="col-md-3">
-        <div class="card bg-info text-white h-100">
-            <div class="card-body text-center">
-                <h2>{{ doctor_count }}</h2>
-                <p>Total Doctors</p>
+
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-primary border-4">
+
+            <div class="card-body">
+
+                <h6>Total Lab Requests</h6>
+
+                <h2>{{ total_lab_requests }}</h2>
+
             </div>
+
         </div>
+
     </div>
 
-    <div class="col-md-3">
-        <div class="card bg-secondary text-white h-100">
-            <div class="card-body text-center">
-                <h2>{{ patient_count }}</h2>
-                <p>Total Patients</p>
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-warning border-4">
+
+            <div class="card-body">
+
+                <h6>Pending</h6>
+
+                <h2>{{ pending_lab_requests }}</h2>
+
             </div>
+
         </div>
+
     </div>
 
-    <div class="col-md-3">
-        <div class="card bg-dark text-white h-100">
-            <div class="card-body text-center">
-                <h2>{{ appointment_count }}</h2>
-                <p>Total Appointments</p>
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-info border-4">
+
+            <div class="card-body">
+
+                <h6>Processing</h6>
+
+                <h2>{{ processing_lab_requests }}</h2>
+
             </div>
+
         </div>
+
+    </div>
+
+
+    <div class="col-md-3 mb-3">
+
+        <div class="card shadow border-start border-success border-4">
+
+            <div class="card-body">
+
+                <h6>Completed</h6>
+
+                <h2>{{ completed_lab_requests }}</h2>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
-<div class="card mt-4">
-    <div class="card-header">
-        Latest Doctors
+
+
+
+
+<div class="col-md-3 mb-3">
+
+    <div class="card shadow border-start border-dark border-4">
+
+        <div class="card-body">
+
+            <h6>Reports Uploaded</h6>
+
+            <h2>{{ total_lab_reports }}</h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-primary text-white">
+
+        <h5>Recent Lab Requests</h5>
+
     </div>
 
     <div class="card-body">
-        <table class="table table-striped">
-            <thead class="table-light">
+
+        <table class="table table-hover">
+
+            <thead>
 
                 <tr>
-                    <th>Name</th>
-                    <th>Department</th>
+
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
+                    <th>Date</th>
+
                 </tr>
+
             </thead>
+
             <tbody>
 
-                {% for doctor in latest_doctors %}
+                {% for request in recent_lab_requests %}
+
                 <tr>
-                    <td>{{ doctor.user.get_full_name }}</td>
-                    <td>{{ doctor.department }}</td>
+
+                    <td>{{ request.patient }}</td>
+
+                    <td>{{ request.doctor }}</td>
+
+                    <td>{{ request.status }}</td>
+
+                    <td>{{ request.requested_date|date:"d M Y" }}</td>
+
                 </tr>
+
                 {% empty %}
+
                 <tr>
-                    <td colspan="2">No doctors found.</td>
+
+                    <td colspan="4">
+
+                        No laboratory requests found.
+
+                    </td>
+
                 </tr>
+
                 {% endfor %}
+
             </tbody>
 
         </table>
+
     </div>
+
 </div>
-<div class="card mt-4">
-    <div class="card-header">
-        Latest Patients
+
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-success text-white">
+
+        <h5>Recent Laboratory Reports</h5>
+
     </div>
 
     <div class="card-body">
-        <table class="table table-striped">
-            <thead class="table-light">
+
+        <table class="table">
+
+            <thead>
 
                 <tr>
-                    <th>Name</th>
+
+                    <th>Report</th>
+                    <th>Technician</th>
+                    <th> Report Create Date</th>
+                    <th> Verified Reports</th>
+                    <th> Pending Verification </th>
+
+
                 </tr>
+
             </thead>
+
             <tbody>
-                {% for patient in latest_patients %}
+
+                {% for report in recent_lab_reports %}
+
                 <tr>
-                    <td>{{ patient }}</td>
+
+                    <td>{{ report.lab_request }}</td>
+
+                    <td>{{ report.technician }}</td>
+
+                    <td>{{ report.generated_at|date:"d M Y" }}</td>
+                    <td>{{ verified_reports }}</td>
+                    <td>{{ pending_verification }}</td>
+
+
                 </tr>
+
                 {% empty %}
+
                 <tr>
-                    <td>No patients found.</td>
+
+                    <td colspan="3">
+
+                        No reports uploaded.
+
+                    </td>
+
                 </tr>
+
                 {% endfor %}
+
             </tbody>
+
         </table>
+
+    </div>
+
+</div>
+
+
+<div class="row mt-4">
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header">
+                Billing Status
+            </div>
+
+            <div class="card-body">
+                <canvas id="billingChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header">
+                Monthly Revenue
+            </div>
+
+            <div class="card-body">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header">
+                Appointment Status
+            </div>
+
+            <div class="card-body">
+                <canvas id="appointmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header">
+                Laboratory Status
+            </div>
+
+            <div class="card-body">
+                <canvas id="labChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-primary border-4">
+            <div class="card-body">
+                <h6>Total Bills</h6>
+                <h2>{{ bill_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-success border-4">
+            <div class="card-body">
+                <h6>Paid Bills</h6>
+                <h2>{{ paid_bill_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-warning border-4">
+            <div class="card-body">
+                <h6>Pending Bills</h6>
+                <h2>{{ pending_bill_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-danger border-4">
+            <div class="card-body">
+                <h6>Cancelled Bills</h6>
+                <h2>{{ cancelled_bills }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-success border-4">
+            <div class="card-body">
+                <h5>Total Revenue</h5>
+                <h2>Rs. {{ total_revenue }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-info border-4">
+            <div class="card-body">
+                <h5>Today's Revenue</h5>
+                <h2>Rs. {{ today_revenue }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card shadow border-start border-dark border-4">
+            <div class="card-body">
+                <h5>Monthly Revenue</h5>
+                <h2>Rs. {{ monthly_revenue }}</h2>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="mb-4">
 
-    <a href="{% url 'doctor_add' %}" class="btn btn-primary">
-        Add Doctor
-    </a>
+<hr>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ billing_labels|json_script:"billing-labels" }}
+{{ billing_values|json_script:"billing-values" }}
 
-    <a href="{% url 'patient_add' %}" class="btn btn-success">
-        Add Patient
-    </a>
+{{ revenue_labels|json_script:"revenue-labels" }}
+{{ revenue_values|json_script:"revenue-values" }}
 
-    <a href="{% url 'appointments_add' %}" class="btn btn-warning">
-        New Appointment
-    </a>
-    <i class="fa-solid fa-user-doctor"></i><i class="fa-solid fa-user"></i><i class="fa-solid fa-calendar-check"></i><i
-        class="fa-solid fa-clock"></i>
-</div>
+{{ appointment_labels|json_script:"appointment-labels" }}
+{{ appointment_values|json_script:"appointment-values" }}
+
+{{ lab_labels|json_script:"lab-labels" }}
+{{ lab_values|json_script:"lab-values" }}
+
+<script>
+    const billingLabels = JSON.parse(
+        document.getElementById('billing-labels').textContent
+    );
+
+    const billingValues = JSON.parse(
+        document.getElementById('billing-values').textContent
+    );
+
+    const revenueLabels = JSON.parse(
+        document.getElementById('revenue-labels').textContent
+    );
+
+    const revenueValues = JSON.parse(
+        document.getElementById('revenue-values').textContent
+    );
+
+    const appointmentLabels = JSON.parse(
+        document.getElementById('appointment-labels').textContent
+    );
+
+    const appointmentValues = JSON.parse(
+        document.getElementById('appointment-values').textContent
+    );
+
+    const labLabels = JSON.parse(
+        document.getElementById('lab-labels').textContent
+    );
+
+    const labValues = JSON.parse(
+        document.getElementById('lab-values').textContent
+    );
+
+    new Chart(document.getElementById('billingChart'), {
+        type: 'pie',
+        data: {
+            labels: billingLabels,
+            datasets: [{
+                data: billingValues
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: revenueLabels,
+            datasets: [{
+                label: 'Revenue',
+                data: revenueValues
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('appointmentChart'), {
+        type: 'doughnut',
+        data: {
+            labels: appointmentLabels,
+            datasets: [{
+                data: appointmentValues
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('labChart'), {
+        type: 'bar',
+        data: {
+            labels: labLabels,
+            datasets: [{
+                label: 'Lab Requests',
+                data: labValues
+            }]
+        }
+    });
+</script>
+
 {% endblock %}
