@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <h2 class="mb-4">
+
+        Reports Dashboard
+
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Total Patients</h6>
+
+                    <h2>{{ patient_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Total Doctors</h6>
+
+                    <h2>{{ doctor_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Appointments</h6>
+
+                    <h2>{{ appointment_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Total Revenue</h6>
+
+                    <h2>Rs. {{ total_revenue }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>👤 Patient Reports</h5>
+
+                    <p>Generate patient reports.</p>
+
+                    <a href="{% url 'patient_report' %}" class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>👨‍⚕️ Doctor Reports</h5>
+
+                    <p>Generate doctor reports.</p>
+
+                    <a href="#" class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>📅 Appointment Reports</h5>
+
+                    <p>Generate appointment reports.</p>
+
+                    <a href="#" class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>🧪 Laboratory Reports</h5>
+
+                    <p>Generate laboratory reports.</p>
+
+                    <a href="#" class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>💊 Pharmacy Reports</h5>
+
+                    <p>Generate pharmacy reports.</p>
+
+                    <a href="#" class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>💳 Billing Reports</h5>
+
+                    <p>Generate billing reports.</p>
+
+                    <a href="#" class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>💰 Revenue Reports</h5>
+
+                    <p>View revenue analysis.</p>
+
+                    <a href="#" class="btn btn-success">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h5>📊 Analytics</h5>
+
+                    <p>View system analytics.</p>
+
+                    <a href="#" class="btn btn-dark">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

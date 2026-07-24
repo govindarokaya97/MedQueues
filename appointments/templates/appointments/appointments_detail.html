@@ -28,6 +28,27 @@
 
             <p><strong>Status:</strong> {{ appointment.status }}</p>
 
+            {% if appointment.queue_number %}
+            <p>
+                <strong>Queue Token:</strong>
+                <span class="badge bg-info fs-6">#{{ appointment.queue_number }}</span>
+                {% if appointment.queue_position %}
+                    &mdash; position {{ appointment.queue_position }} in line
+                {% endif %}
+            </p>
+            {% elif request.user.role != "patient" and appointment.status != "Cancelled" and appointment.status != "Completed" %}
+            <form method="POST" action="{% url 'appointments_check_in' id=appointment.id %}" class="mb-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    Check In &amp; Issue Token
+                </button>
+            </form>
+            {% endif %}
+
+            <a href="{% url 'queue_board' doctor_id=appointment.doctor.id %}" class="btn btn-outline-secondary btn-sm mb-2">
+                View Live Queue
+            </a>
+
             <hr>
 
             {% if appointment.prescription %}

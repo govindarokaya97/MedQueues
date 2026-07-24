@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'laboratory',
     'billing',
     'inventory',
+    'reports'
 ]
 
 MIDDLEWARE = [
