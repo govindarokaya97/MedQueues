@@ -1,88 +1,45 @@
-<div class="pt-3">
-    <h5 class="text-white">Dashboard</h5>
-    <hr class="text-white">
-    <ul class=" nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'dashboard' %}">Home</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'patient_list' %}">Patients</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'patient_add' %}">Add Patient</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'patient_dashboard' %}">Patient Dashboard</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'doctor_list' %}">Doctors</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'doctor_profile' %}">My Profile</a>
-        </li>
-
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'doctor_add' %}">Add Doctor</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'doctor_dashboard' %}">Doctor Dashboard</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'leave_list' %}">Leave Requests</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'appointments_list' %}">Appointments</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'appointments_add' %}">Book Appointment</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'appointments_dashboard' %}">Appointment Dashboard</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'upcoming_appointments' %}">Upcoming Appointments</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'appointments_report' %}">Appointment Report</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'test_list' %}">Laboratory</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'request_list' %}">Lab Report</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'test_list' %}">Test List</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'bill_list' %}">Billing</a>
-        </li>
-
-        <a class="nav-link text-white" href="{% url 'prescription_list' %}">
-            Prescriptions
-        </a>
-
-        <a class="nav-link text-white" href="{% url 'medicine_list' %}">
-            Pharmacy
-        </a>
-
-
-    </ul>
-</div>
+<aside class="app-sidebar" id="app-sidebar">
+    <div class="sidebar-brand">
+        <span class="brand-mark"><span class="material-symbols-outlined">medical_services</span></span>
+        <span class="brand-name">MedQueue</span>
+        <button class="sidebar-close d-md-none" type="button" data-sidebar-close aria-label="Close navigation"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sidebar-scroll">
+        <div class="sidebar-section-label">{% if request.user.role == 'admin' %}Administration{% elif request.user.role == 'doctor' %}Clinical workspace{% else %}My care{% endif %}</div>
+        <nav class="sidebar-nav" aria-label="Primary navigation">
+            {% if request.user.role == 'admin' %}
+            <a class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}" href="{% url 'dashboard' %}"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+            <a class="sidebar-link {% if 'patient' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'patient_list' %}"><span class="material-symbols-outlined">group</span><span>Patients</span></a>
+            <a class="sidebar-link {% if 'doctor' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'doctor_list' %}"><span class="material-symbols-outlined">stethoscope</span><span>Doctors</span></a>
+            <a class="sidebar-link {% if 'appointment' in request.resolver_match.url_name or 'queue' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'appointments_list' %}"><span class="material-symbols-outlined">event</span><span>Appointments</span></a>
+            <a class="sidebar-link {% if 'bill' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'bill_list' %}"><span class="material-symbols-outlined">payments</span><span>Billing</span></a>
+            <a class="sidebar-link {% if 'medicine' in request.resolver_match.url_name or 'prescription' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'medicine_list' %}"><span class="material-symbols-outlined">medication</span><span>Pharmacy</span></a>
+            <a class="sidebar-link {% if 'test' in request.resolver_match.url_name or 'request' in request.resolver_match.url_name or 'report_detail' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'request_list' %}"><span class="material-symbols-outlined">biotech</span><span>Laboratory</span></a>
+            <a class="sidebar-link {% if 'report' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'report_dashboard' %}"><span class="material-symbols-outlined">assessment</span><span>Reports</span></a>
+            {% elif request.user.role == 'doctor' %}
+            <a class="sidebar-link {% if request.resolver_match.url_name == 'doctor_dashboard' %}is-active{% endif %}" href="{% url 'doctor_dashboard' %}"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+            <a class="sidebar-link {% if 'patient' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'patient_list' %}"><span class="material-symbols-outlined">folder_shared</span><span>Patient Records</span></a>
+            <a class="sidebar-link {% if 'appointment' in request.resolver_match.url_name or 'queue' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'appointments_list' %}"><span class="material-symbols-outlined">event</span><span>Appointments</span></a>
+            <a class="sidebar-link {% if 'test' in request.resolver_match.url_name or 'request' in request.resolver_match.url_name or 'report_detail' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'request_list' %}"><span class="material-symbols-outlined">biotech</span><span>Lab</span></a>
+            <a class="sidebar-link {% if 'medicine' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'medicine_list' %}"><span class="material-symbols-outlined">inventory_2</span><span>Inventory</span></a>
+            <a class="sidebar-link {% if 'prescription' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'prescription_list' %}"><span class="material-symbols-outlined">prescriptions</span><span>E-Prescriptions</span></a>
+            <a class="sidebar-link {% if 'report' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'report_dashboard' %}"><span class="material-symbols-outlined">assessment</span><span>Reports</span></a>
+            {% else %}
+            <a class="sidebar-link {% if request.resolver_match.url_name == 'patient_dashboard' %}is-active{% endif %}" href="{% url 'patient_dashboard' %}"><span class="material-symbols-outlined">dashboard</span><span>Overview</span></a>
+            <a class="sidebar-link {% if request.resolver_match.url_name == 'appointments_list' or request.resolver_match.url_name == 'upcoming_appointments' %}is-active{% endif %}" href="{% url 'upcoming_appointments' %}"><span class="material-symbols-outlined">event</span><span>Appointments</span></a>
+            <a class="sidebar-link {% if request.resolver_match.url_name == 'my_queue_status' or request.resolver_match.url_name == 'queue_board' %}is-active{% endif %}" href="{% url 'my_queue_status' %}"><span class="material-symbols-outlined">confirmation_number</span><span>Queue Status</span></a>
+            <a class="sidebar-link {% if request.resolver_match.url_name == 'patient_detail' %}is-active{% endif %}" href="{% url 'patient_detail' request.user.patient.id %}"><span class="material-symbols-outlined">folder_shared</span><span>Medical Records</span></a>
+            <a class="sidebar-link {% if 'prescription' in request.resolver_match.url_name %}is-active{% endif %}" href="{% url 'prescription_list' %}"><span class="material-symbols-outlined">prescriptions</span><span>Prescriptions</span></a>
+            {% endif %}
+        </nav>
+    </div>
+    <div class="sidebar-bottom">
+        <div class="sidebar-profile">
+            <div class="profile-avatar">{{ request.user.get_full_name|default:request.user.username|slice:':1'|upper }}</div>
+            <div class="profile-copy"><strong>{% if request.user.get_full_name %}{{ request.user.get_full_name }}{% else %}{{ request.user.username }}{% endif %}</strong><span>{{ request.user.get_role_display|default:request.user.role|title }}</span></div>
+            {% if request.user.role == 'doctor' %}<a class="profile-settings" href="{% url 'doctor_profile' %}" aria-label="Profile settings"><span class="material-symbols-outlined">settings</span></a>{% endif %}
+        </div>
+        <form action="{% url 'logout' %}" method="POST" class="sidebar-logout-form">{% csrf_token %}<button class="sidebar-logout" type="submit"><span class="material-symbols-outlined">logout</span><span>Sign out</span></button></form>
+    </div>
+</aside>
+<div class="sidebar-backdrop" data-sidebar-close></div>

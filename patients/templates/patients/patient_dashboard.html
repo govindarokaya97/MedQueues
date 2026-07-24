@@ -1,80 +1,15 @@
 {% extends 'base.html' %}
-
-{% block title %}Patient Dashboard{% endblock %}
-
+{% block title %}My Care | MedQueue{% endblock %}
 {% block content %}
-
-<div class="container-fluid mt-4">
-
-    <h2> Welcome {{ patient.user.get_full_name }} </h2>
-    <div class="row">
-        <div class="col-md-3 mb-3">
-            <div class="card text-white bg-primary shadow">
-                <div class="card-body">
-                    <h3>{{ upcoming_appointments }}</h3>
-                    <p>Upcoming Appointments</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card text-white bg-primary shadow">
-                <div class="card-body">
-                    <h3>{{ recent_appointments|length }}</h3>
-                    <p>Recent Visits</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Visit History -->
-    <div class="card mt-4 shadow-sm">
-        <div class="card-header">
-            <h5 class="mb-0">Visit History</h5>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Doctor</th>
-                        <th>Status</th>
-                        <th>Reason</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appointment in recent_appointments %}
-                    <tr>
-                        <td>{{ appointment.appointment_date }}</td>
-                        <td>{{ appointment.doctor }}</td>
-                        <td>{{ appointment.status }}</td>
-                        <td>{{ appointment.reason|default:"—" }}</td>
-                        <td>{{ appointment.notes|default:"—" }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center">No visits recorded yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Medical Summary -->
-    <div class="card mt-4 shadow-sm">
-        <div class="card-header">
-            <h5 class="mb-0">Medical Summary</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Blood Group:</strong> {{ patient.blood_group|default:"—" }}</p>
-            <p><strong>Chronic Disease:</strong> {{ patient.chronic_disease|default:"—" }}</p>
-            <p><strong>Allergies:</strong> {{ patient.allergies|default:"—" }}</p>
-            <p><strong>Medical History:</strong> {{ patient.medical_history|default:"—" }}</p>
-        </div>
-    </div>
+<section class="page-heading"><div><h1>My care overview</h1><p>Welcome back, {{ patient.user.get_full_name|default:request.user.username }}. Stay on top of your appointments and health records.</p></div><div class="page-heading-actions"><a class="mq-button" href="{% url 'my_queue_status' %}"><span class="material-symbols-outlined">confirmation_number</span> Queue status</a><a class="mq-button primary" href="{% url 'appointments_add' %}"><span class="material-symbols-outlined">add</span> Book appointment</a></div></section>
+<div class="stat-grid">
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon"><span class="material-symbols-outlined">event</span></div><span class="stat-trend">Next visit</span></div><span class="stat-value">{{ upcoming_appointments|default:0 }}</span><span class="stat-label">Upcoming appointments</span></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon green"><span class="material-symbols-outlined">history</span></div><span class="stat-trend neutral">Records</span></div><span class="stat-value">{{ recent_appointments|length }}</span><span class="stat-label">Recent visits</span></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon amber"><span class="material-symbols-outlined">bloodtype</span></div><span class="stat-trend neutral">Profile</span></div><span class="stat-value">{{ patient.blood_group|default:'—' }}</span><span class="stat-label">Blood group</span></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon red"><span class="material-symbols-outlined">verified_user</span></div><span class="stat-trend">Secure</span></div><span class="stat-value">{{ patient.id }}</span><span class="stat-label">Patient ID</span></div>
 </div>
-
+<div class="content-grid">
+    <section class="mq-panel table-panel"><div class="panel-header"><div><h2>Visit history</h2><p>Your latest appointment activity</p></div><a class="panel-link" href="{% url 'upcoming_appointments' %}">View appointments</a></div><table class="mq-table"><thead><tr><th>Date</th><th>Doctor</th><th>Status</th><th>Reason</th></tr></thead><tbody>{% for appointment in recent_appointments %}<tr><td>{{ appointment.appointment_date }}</td><td><div class="person-cell"><span class="person-initial">{{ appointment.doctor.user.get_full_name|default:appointment.doctor|slice:':2'|upper }}</span>{{ appointment.doctor }}</div></td><td><span class="status-badge {% if appointment.status == 'Completed' %}success{% elif appointment.status == 'Pending' %}warning{% elif appointment.status == 'Cancelled' %}danger{% else %}info{% endif %}">{{ appointment.status }}</span></td><td class="muted-text">{{ appointment.reason|default:'Routine consultation' }}</td></tr>{% empty %}<tr><td colspan="4"><div class="empty-state"><span class="material-symbols-outlined">event_busy</span>No visits recorded yet.</div></td></tr>{% endfor %}</tbody></table></section>
+    <div class="content-stack"><section class="mq-panel"><div class="panel-header"><div><h2>My medical summary</h2><p>Information available to your care team</p></div><a class="panel-link" href="{% url 'patient_detail' patient.id %}">View full record</a></div><div class="panel-body"><div class="summary-list"><p><strong>Chronic disease</strong><span>{{ patient.chronic_disease|default:'None recorded' }}</span></p><p><strong>Allergies</strong><span>{{ patient.allergies|default:'None recorded' }}</span></p><p><strong>Medical history</strong><span>{{ patient.medical_history|default:'No history added' }}</span></p></div></div></section><section class="mq-panel"><div class="panel-header"><div><h2>Quick actions</h2><p>Access your care tools</p></div></div><div class="panel-body"><div class="quick-actions"><a class="quick-action" href="{% url 'appointments_add' %}"><span class="material-symbols-outlined">event_available</span>Book a visit</a><a class="quick-action" href="{% url 'my_queue_status' %}"><span class="material-symbols-outlined">confirmation_number</span>Live queue</a></div></div></section></div>
+</div>
 {% endblock %}

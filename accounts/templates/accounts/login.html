@@ -1,29 +1,29 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in | MedQueue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
-
-<body>
-    <h2>MedQueue Login</h2>
-
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    </form>
+<body class="login-page">
+    <main class="login-layout">
+        <section class="login-story">
+            <div class="login-brand"><span class="brand-mark"><span class="material-symbols-outlined">medical_services</span></span><span>MedQueue</span></div>
+            <div class="login-story-copy"><span class="login-kicker">Precision healthcare management</span><h1>Better care starts with a better queue.</h1><p>One secure workspace for patients, clinicians, and the teams that keep care moving.</p><div class="login-points"><span><span class="material-symbols-outlined">verified_user</span>Secure by design</span><span><span class="material-symbols-outlined">insights</span>Connected workflows</span></div></div>
+            <div class="login-story-footer"><span>© 2026 MedQueue</span><span>HIPAA-ready workflows</span></div>
+        </section>
+        <section class="login-panel">
+            <div class="login-card">
+                <div class="login-card-heading"><span class="login-mobile-mark material-symbols-outlined">medical_services</span><h2>Welcome back</h2><p>Sign in to continue to your MedQueue workspace.</p></div>
+                {% if error %}<div class="login-error"><span class="material-symbols-outlined">error</span>{{ error }}</div>{% endif %}
+                <div class="login-role-tabs"><span class="is-selected">Patient</span><span>Doctor</span><span>Admin</span></div>
+                <form method="post" class="login-form">{% csrf_token %}<label for="username">Username or email<input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="username" required></label><label for="password">Password<div class="password-field"><input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required><span class="material-symbols-outlined">visibility</span></div></label><div class="login-options"><label class="remember"><input type="checkbox"> <span>Remember me</span></label><a href="#">Forgot password?</a></div><button class="login-submit" type="submit">Sign in <span class="material-symbols-outlined">arrow_forward</span></button></form>
+                <p class="login-support">Need help? <a href="#">Contact support</a></p>
+            </div>
+        </section>
+    </main>
 </body>
-
 </html>

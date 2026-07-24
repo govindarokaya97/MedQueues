@@ -1,15 +1,13 @@
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container-fluid">
-        <span class="navbar-brand">MedQueue</span>
-        <span class="text-white">{{ request.user.username }}</span>
-        <form action="{% url 'logout' %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-danger">
-                Logout
-            </button>
-        </form>
-
+<header class="app-topbar">
+    <div class="topbar-left">
+        <button class="mobile-menu-button d-md-none" type="button" data-sidebar-open aria-label="Open navigation"><span class="material-symbols-outlined">menu</span></button>
+        <div class="breadcrumb-line"><span class="breadcrumb-muted">MedQueue</span><span class="material-symbols-outlined">chevron_right</span><strong>{% if request.user.role == 'admin' %}Administration{% elif request.user.role == 'doctor' %}Clinical workspace{% else %}My care{% endif %}</strong></div>
+        <label class="topbar-search"><span class="material-symbols-outlined">search</span><input type="search" placeholder="Search patient ID, name, or records..." aria-label="Search"></label>
     </div>
-
-
-</nav>
+    <div class="topbar-actions">
+        <button class="icon-button has-notification" type="button" aria-label="Notifications"><span class="material-symbols-outlined">notifications</span><i></i></button>
+        <button class="icon-button emergency-icon" type="button" aria-label="Emergency contact"><span class="material-symbols-outlined">emergency_home</span></button>
+        <span class="topbar-divider"></span>
+        <div class="topbar-user"><div class="profile-avatar small">{{ request.user.get_full_name|default:request.user.username|slice:':1'|upper }}</div><div class="topbar-user-copy"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>{{ request.user.get_role_display|default:request.user.role|title }}</span></div></div>
+    </div>
+</header>

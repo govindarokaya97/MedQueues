@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "includes/back_button.html" %}
+<div class="container mt-4">
+
+    <h2>Live Queue &mdash; Dr. {{ doctor.user.get_full_name }}</h2>
+    <p class="text-muted">{{ doctor.specialization }}</p>
+
+    <div class="card text-center mb-4 border-primary">
+        <div class="card-header bg-primary text-white">Now Serving</div>
+        <div class="card-body">
+            <h1 id="now-serving-number" class="display-3 mb-0">
+                {% if now_serving %}#{{ now_serving.queue_number }}{% else %}&mdash;{% endif %}
+            </h1>
+            {% if now_serving %}
+            <p class="mt-2 mb-0">
+                {% if request.user.role == "patient" %}Patient in consultation{% else %}{{ now_serving.patient }}{% endif %}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if request.user.role == "admin" or request.user.role == "doctor" %}
+    <form method="POST" action="{% url 'queue_call_next' doctor_id=doctor.id %}" class="mb-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Call Next Patient</button>
+    </form>
+    {% endif %}
+
+    <h4>Waiting (<span id="waiting-count">{{ waiting.count }}</span>)</h4>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Token</th>
+                <th>Patient</th>
+                <th>Checked In</th>
+            </tr>
+        </thead>
+        <tbody id="waiting-body">
+            {% for appt in waiting %}
+            <tr>
+                <td>#{{ appt.queue_number }}</td>
+                <td>
+                    {% if request.user.role == "patient" %}Patient waiting{% else %}{{ appt.patient }}{% endif %}
+                </td>
+                <td>{{ appt.checked_in_at|time:"H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center text-muted">No one waiting</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    // Lightweight polling so the board stays live without WebSockets/Channels.
+    const doctorId = {{ doctor.id }};
+    const dataUrl = "{% url 'queue_board_data' doctor_id=doctor.id %}";
+
+    async function refreshQueue() {
+        try {
+            const res = await fetch(dataUrl);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            document.getElementById("now-serving-number").textContent =
+                data.now_serving ? "#" + data.now_serving : "\u2014";
+            document.getElementById("waiting-count").textContent = data.waiting_count;
+        } catch (e) {
+            // Silently ignore transient network errors; next poll will retry.
+        }
+    }
+
+    setInterval(refreshQueue, 15000);
+</script>
+{% endblock %}

@@ -66,6 +66,9 @@
                     {% if appointment.status == "Pending" %}
                     <span class=" badge bg-warning">Pending</span>
 
+                    {% elif appointment.status == "Waiting" %}
+                    <span class=" badge bg-info">Waiting {% if appointment.queue_number %}#{{ appointment.queue_number }}{% endif %}</span>
+
                     {% elif appointment.status == "Confirmed" %}
                     <span class=" badge bg-success"> Confirmed </span>
 

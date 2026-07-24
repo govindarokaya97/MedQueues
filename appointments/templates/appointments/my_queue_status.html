@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "includes/back_button.html" %}
+<div class="container mt-4">
+
+    <h2>My Queue Status</h2>
+
+    {% if appointments %}
+        {% for appt in appointments %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Dr. {{ appt.doctor.user.get_full_name }}</h5>
+                <p class="mb-1"><strong>Status:</strong> {{ appt.status }}</p>
+
+                {% if appt.queue_number %}
+                    <p class="mb-1">
+                        <strong>Your Token:</strong>
+                        <span class="badge bg-info fs-6">#{{ appt.queue_number }}</span>
+                    </p>
+                    {% if appt.status == "Waiting" %}
+                        <p class="mb-1"><strong>Position in line:</strong> {{ appt.queue_position }}</p>
+                    {% elif appt.status == "In Progress" %}
+                        <p class="mb-1 text-success"><strong>You're being seen now.</strong></p>
+                    {% endif %}
+                    <a href="{% url 'queue_board' doctor_id=appt.doctor.id %}" class="btn btn-sm btn-outline-secondary">
+                        View Live Board
+                    </a>
+                {% else %}
+                    <p class="text-muted mb-0">Not checked in yet. Please check in at the front desk to receive a token.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">You have no active appointments today.</p>
+    {% endif %}
+
+</div>
+{% endblock %}
